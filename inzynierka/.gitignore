@@ -1,0 +1,61 @@
+# =========================
+# FRONTEND (Node.js / Vite)
+# =========================
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies and Build
+node_modules
+dist
+dist-ssr
+*.local
+
+# =========================
+# BACKEND (Python)
+# =========================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Wirtualne œrodowiska (bardzo wa¿ne!)
+venv/
+.venv/
+env/
+ENV/
+
+# Testy i pokrycie kodu (pytest, coverage)
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Narzêdzia dystrybucyjne Pythona
+build/
+*.egg-info/
+*.egg
+
+# =========================
+# ZMIENNE ŒRODOWISKOWE (Sekrety)
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# EDYTORY I SYSTEMY OPERACYJNE
+# =========================
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
