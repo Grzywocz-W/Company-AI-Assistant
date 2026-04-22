@@ -28,16 +28,23 @@ react.add_middleware(
     allow_headers=["*"],  
 )
 model = modelsList.gemi3_1_fl
-coordAgent = CoordinatorAgent(
-    model=model)
+#coordAgent = CoordinatorAgent(model=model)
+
+#jeden użytkwonik = jedna sesja
+sessionsDict= {}#'Michal', <obiekt>
 
 class messageRequest(BaseModel):
+    sessionID: str#liczba dla klientów, tekst dla admina itp.
     text: str
 
 @react.post("/chat")
 def feedback(request: messageRequest):
     try:
-        response = coordAgent.coordinatorResponse(request.text)
+        currentSession = request.sessionID
+        if currentSession not in sessionsDict:
+            sessionsDict[currentSession] = CoordinatorAgent(model=model)
+            
+        response = sessionsDict[currentSession].coordinatorResponse(request.text)
         
         #return {'result': response.content}
         return {'result': response}
