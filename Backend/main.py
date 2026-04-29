@@ -32,7 +32,7 @@ model = modelsList.gemi3_1_fl
 
 #jeden użytkwonik = jedna sesja
 sessionsDict= {}#'Michal', <obiekt>
-
+#!!!!!DODAĆ ZWALNANIE PAMIĘCI!!!!!!!
 class messageRequest(BaseModel):
     sessionID: str#liczba dla klientów, tekst dla admina itp.
     text: str
