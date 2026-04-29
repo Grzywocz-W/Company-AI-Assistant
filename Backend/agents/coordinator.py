@@ -12,13 +12,12 @@ from langchain_core.tools import Tool
 ####
 from models import modelsList
 from agents.database_agent import DataBaseAgent
+from agents.RAG_agent import RagAgent
+from agents.internet_agent import InternetAgent
 
 api_key = os.getenv("Gemini_API_Key")
 
-
-#def askDataBaseAgent(ask: str):
-#    return f"Wynik jest poprawny to tylko test."
-
+docsPath = "documents/regulamin.pdf"
 
 class CoordinatorAgent:
     def __init__(self, model: modelsList):
@@ -32,12 +31,22 @@ class CoordinatorAgent:
         #self.chatHistory = []
         #========================AGENCI========================#
         self.dataBaseAgent = DataBaseAgent(model)
+        self.ragAgent = RagAgent(model, docsPath)
+        self.internetAgent = InternetAgent(model)
         #========================AGENCI========================#
 
         self.tools =[
             Tool(name = "AgentBazyDanych",
                  func= self.dataBaseAgent.dataBaseAgentResponse,
                  description = "Używaj tylko wtedy kiedy otrzymasz zapytanie o przeszukanie bazy danych."
+                 ),
+            Tool(name = "AgentPrzeszukaniaDokumentów",
+                 func= self.ragAgent.ragAgentResponse,
+                 description = "Używaj tylko wtedy kiedy otrzymasz zapytanie związane z dokumentacją."
+                 ),
+            Tool(name = "AgentPrzeszukaniaInternetu",
+                 func= self.internetAgent.internetAgentResponse,
+                 description = "Używaj do przeszukania sieci. Nie podawaj ŻADNYCH wrażliwych dancyh"
                  ),
             ]
         #dodać później wyszukiwarkę
