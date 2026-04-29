@@ -17,7 +17,7 @@ from agents.internet_agent import InternetAgent
 
 api_key = os.getenv("Gemini_API_Key")
 
-docsPath = "documents/regulamin.pdf"
+docsPath = "vectorDB"
 
 class CoordinatorAgent:
     def __init__(self, model: modelsList):

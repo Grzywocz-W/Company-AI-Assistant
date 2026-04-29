@@ -8,8 +8,6 @@ from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import Tool
 ####RAG
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 ###
 from models import modelsList
@@ -19,7 +17,7 @@ api_key = os.getenv("Gemini_API_Key")
 
 
 class RagAgent:
-    def __init__(self, model: modelsList,pdf_paths: str = "dokumenty/regulamin.pdf"):
+    def __init__(self, model: modelsList,db_path: str = "vectorDB"):
         
         self.agent = ChatGoogleGenerativeAI(
             model=model.value,#jest to enum, a nie tablica
@@ -27,16 +25,15 @@ class RagAgent:
             temperature=0.1#małą kreatywność
             )
 
-        pdfLoader = PyPDFLoader(pdf_paths)
-        pdfsContent = pdfLoader.load()
-
-        chuckedContent = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        documents = chuckedContent.split_documents(pdfsContent)
-
-        embeddedDocuments = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001", google_api_key=api_key)
+        
+        embeddedModel = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001", google_api_key=api_key)
 
 
-        self.vectorDataBase = FAISS.from_documents(documents,embeddedDocuments)#(tekst,wektor embbeded tego tekstu)
+        self.vectorDataBase = FAISS.load_local(
+            folder_path=db_path, 
+            embeddings=embeddedModel, 
+            allow_dangerous_deserialization=True
+            )
 
         def searchVectorDataBase(sentence: str):# dodano str, bo był błąd podczas pytania o liczby
             mostAccurateDocuments = self.vectorDataBase.similarity_search(sentence,k=3)#potestować dla różnego k
