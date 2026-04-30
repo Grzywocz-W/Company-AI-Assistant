@@ -1,13 +1,18 @@
 //fastApiConnector
 
-export const sendTextToFastAPI = async (text) => {
+export const sendTextToFastAPI = async (text, sessionID) => {
     try {
         const response = await fetch('http://127.0.0.1:8000/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ text }),
+            body: JSON.stringify(
+                {
+                    sessionID: sessionID,
+                    text: text,
+                }
+            ),
         });
 
         if (!response.ok) {

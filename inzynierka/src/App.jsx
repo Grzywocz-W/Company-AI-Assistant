@@ -1,15 +1,15 @@
 ﻿import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+//import heroImg from './assets/hero.png'
 import './App.css'
 
 import ChatWindow from './components/chatWindow'
 function App() {
-  const [count, setCount] = useState(0)
+  //const [count, setCount] = useState(0)
 
   return (
-    <>
+      <>{/*
       <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
@@ -28,7 +28,7 @@ function App() {
         >
           Count is {count}
         </button>
-          </section>
+          </section>*/}
 
       <ChatWindow />
 

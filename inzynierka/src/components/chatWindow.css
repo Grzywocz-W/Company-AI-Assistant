@@ -1,0 +1,137 @@
+/*VS sam ustawia sobie formatowanie kodu.*/
+/*Okno chatu */
+.chatWindow 
+{
+    width: 100%;
+    max-width: 800px;
+    height: 600px;
+    margin: 20px auto;
+    border: 1px solid #444;
+    border-radius: 12px;
+    background-color: #1e1e1e; /*Ciemny motyw*/
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* historia rozmowy */
+.chatHistory {
+    padding: 20px;
+    flex-direction: column;
+    gap: 15px; /* ostêpny miêdzy dymkami */
+    flex: 1; /* rozci¹ganie */
+    display: flex;
+    overflow-y: auto; /* przewijanie*/
+}
+
+/* Wiersz wiadomoœci - ca³a szerokoœæ */
+.messageRow {
+    width: 100%;
+    display: flex;
+}
+
+    /* U¯YTKOWNIK na prawo */
+    .messageRow.user {
+        justify-content: flex-end;
+    }
+
+    /* AI na lewo */
+    .messageRow.ai {
+        justify-content: flex-start;
+    }
+
+/* "Dymek" z tekstem */
+.messageBubble {
+    max-width: 75%;
+    border-radius: 18px;
+    padding: 12px 18px;
+    font-size: 20px;
+    line-height: 2;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+    .messageBubble.user {
+        background-color:#007bff;
+        color:white;
+        border-bottom-right-radius: 6px; /* W stylu mesengera*/
+    }
+
+    .messageBubble.ai {
+        background-color: #333;
+        color: #fff;
+        border-bottom-left-radius: 4px;
+    }
+
+/* Pasek inputu */
+.chatInputBar {
+    padding: 15px;
+    display: flex;
+    background-color: #252525;
+    gap: 10px;
+    border-top: 1px solid #444;
+}
+
+    .chatInputBar input {
+        padding: 12px;
+        border-radius: 20px;
+        border:1px solid #555;
+        background-color: #333;
+        flex: 1;
+        color:white;
+        outline:none;
+    }
+
+.chatInputBar button {
+    padding: 10px 24px;
+    border-radius: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+    .chatInputBar button:disabled {
+        background-color: #555;
+        cursor: not-allowed;
+    }
+
+/* Markdown**/
+
+.messageBubble p {
+    margin: 0 0 10px 0;
+}
+
+    .messageBubble p:last-child {
+        margin-bottom: 0;
+    }
+
+/* Punktory */
+.messageBubble ul, .messageBubble ol {
+    margin: 5px 0 10px 20px;
+    padding-left: 20px;/*Aby nie ucina³o punktorów*/
+}
+
+/* Bloki kodu, zablokowaæ mu mo¿liwoœæ generowania*/
+.messageBubble pre {
+    background-color: #1a1a1a;
+    border-radius: 6px;
+    margin: 10px 0;
+    overflow-x: auto; /* Pasek przewijania!!!*/
+    padding: 10px;
+}
+
+.messageBubble code {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 4px 6px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* wy³¹cznie dublowania t³a*/
+.messageBubble pre code {
+    background-color: transparent;
+    padding: 0;
+}
