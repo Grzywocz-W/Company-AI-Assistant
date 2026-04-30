@@ -13,7 +13,8 @@ def createVectorDataBase():
     pdfLoader = PyPDFLoader(pdf_paths)
     pdfsContent = pdfLoader.load()
 
-    chuckedContent = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    chuckedContent = RecursiveCharacterTextSplitter(separators = ["\n§","§","\n\n","\n","."," "],#hierarchia cięcia.
+        chunk_size=1000,chunk_overlap=200,keep_separator=True)
     documents = chuckedContent.split_documents(pdfsContent)
 
     embeddedDocuments = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001", google_api_key=api_key)

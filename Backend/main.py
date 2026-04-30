@@ -1,4 +1,8 @@
 import os
+### zwalnanie pamięci
+import time
+import asyncio
+from contextlib import asynccontextmanager
 ####API
 import uvicorn
 from fastapi import FastAPI
@@ -8,9 +12,28 @@ from pydantic import BaseModel
 from agents.coordinator import CoordinatorAgent
 from models import modelsList
 
+sessionLifespan = 1800#sekund 30 min.
 
+async def checkSessionLifespan():
+    while True:
+        await asyncio.sleep(300)#co 5 minut
+        now = time.time()#obecny czas
 
-react = FastAPI()
+        sessionsToDelete = []
+        for sesID, data in sessionsDict.items():
+            if now - data['born'] > sessionLifespan:
+                sessionsToDelete.append(sesID)
+
+        for sesID in sessionsToDelete:
+            sessionsDict.pop(sesID)
+
+@asynccontextmanager #bez tego nie działa
+async def sessionGarbageCollector(app: FastAPI):
+    garbageCollector = asyncio.create_task(checkSessionLifespan())
+    yield
+    garbageCollector.cancel()#wyłączyć po zatrzymaniu
+
+react = FastAPI(lifespan = sessionGarbageCollector )
 
 origins =[
     "http://localhost:5173",
@@ -41,10 +64,17 @@ class messageRequest(BaseModel):
 def feedback(request: messageRequest):
     try:
         currentSession = request.sessionID
+
+        now = time.time()
         if currentSession not in sessionsDict:
-            sessionsDict[currentSession] = CoordinatorAgent(model=model)
+            sessionsDict[currentSession] ={#nie można dać do następnej linijki
+                'agent':CoordinatorAgent(model=model),
+                'born': now,#obecny czas
+            }
+        else:
+            sessionsDict[currentSession]['born'] = now
             
-        response = sessionsDict[currentSession].coordinatorResponse(request.text)
+        response = sessionsDict[currentSession]['agent'].coordinatorResponse(request.text)
         
         #return {'result': response.content}
         return {'result': response}
