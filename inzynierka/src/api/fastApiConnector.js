@@ -1,18 +1,32 @@
 //fastApiConnector
 
-export const sendTextToFastAPI = async (text, sessionID) => {
+export const sendTextToFastAPI = async (text, sessionID, attachedFile = null) =>
+{
+    const requestDataForm = new FormData();//aby dodaæ pdf'a trzeba stworzyæ forma
+
+    //nazwy pól musz¹ siê zgadzaæ z tym co jest w main.py
+    requestDataForm.append('sessionID', sessionID);
+    requestDataForm.append('request', text);
+    if (attachedFile)
+    {
+        requestDataForm.append('attachedFile', attachedFile)
+    }
+
+
     try {
         const response = await fetch('http://127.0.0.1:8000/chat', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(
-                {
-                    sessionID: sessionID,
-                    text: text,
-                }
-            ),
+            //przegl¹darka powinna sobie poradziæ bez tego
+            //headers: {
+            //    'Content-Type': 'application/json',
+            //},
+            //body: JSON.stringify(
+            //    {
+            //        sessionID: sessionID,
+            //        text: text,
+            //    }
+            //),
+            body: requestDataForm
         });
 
         if (!response.ok) {

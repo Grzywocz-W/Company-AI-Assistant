@@ -23,6 +23,9 @@ export default function TextInput() {
     const [isSessionOnline, setIsSessionOnline] = useState(true);
     const sessionTimer = useRef(null);
 
+    const [attachedFile, setAttachedFile] = useState(null);//nieobowiązkowe
+    const attachedFileRef = useRef(null);
+
     const updateSessionTime = () =>
     {
         if (sessionTimer.current)
@@ -35,7 +38,7 @@ export default function TextInput() {
             const expiredMessage =
             {
                 role: 'ai',
-                text: 'Sesja wygasłą ze względu bezpieczeństwa. Spróbuj ponownei',
+                text: 'Sesja wygasłą ze względu bezpieczeństwa. Spróbuj ponownie',
             };
             setMessagesList((prev) => [...prev, expiredMessage]);
 
@@ -68,10 +71,26 @@ export default function TextInput() {
 
         updateSessionTime();//aktualizacja czasu
 
-        const messageContent = userInput;
-        setUserInput('');
 
-        const newMessageTMP = {role: 'user', text: messageContent}
+
+        const fileAttachedToMessage = attachedFile;
+        const messageContent = userInput;
+
+
+        setUserInput('');
+        setAttachedFile(null)//opróżnij plik
+        if (attachedFileRef.current)
+        {
+            attachedFileRef.current.value = '';
+        }
+
+        let textInUsersBubble = messageContent;
+        if (fileAttachedToMessage)
+        {
+            textInUsersBubble = `Załączono plik: ${fileAttachedToMessage.name}\n${messageContent}`;
+        }
+
+        const newMessageTMP = { role: 'user', text: textInUsersBubble }
         setMessagesList((prev) => [...prev, newMessageTMP]);//prev, bo jak lista jest w await to cały czas pamięta poprzednią wersje
 
 
@@ -80,7 +99,11 @@ export default function TextInput() {
         try
         {
             //wosobnym pliku
-            const result = await sendTextToFastAPI(messageContent, sessionID);
+            const result = await sendTextToFastAPI(
+                messageContent,
+                sessionID,
+                fileAttachedToMessage
+            );
 
             const newMessageTMP = {role: 'ai', text: result}
             setMessagesList((prev)=>[...prev, newMessageTMP]);
@@ -115,13 +138,16 @@ export default function TextInput() {
 
             {/* Główne okno z historią */}
             <div className="chatHistory">
-                {messagesList.map((msg, index) => (
+                {messagesList.map((msg, index) =>
+                (
                     <div key={index} className={`messageRow ${msg.role}`}>
                         <div className={`messageBubble ${msg.role}`}>
                             <ReactMarkdown>{msg.text}</ReactMarkdown>
                         </div>
                     </div>
-                ))}
+                )
+                )
+                }
 
                 {/* "pisze..." */}
                 {isResponsing && (
@@ -131,8 +157,50 @@ export default function TextInput() {
                 )}
             </div>
 
+            {/*Pasek z podglądem wybranego pliku nad polem wpisywania */}
+            {attachedFile &&
+                (
+                <div className = "fileAttachButton">
+                    <span>
+                        📎 Wybrano plik: <strong>{attachedFile.name}</strong>
+                    </span>
+                    <button
+                        className="attachedFileRemoveButton"
+                        onClick={() =>
+                        {
+                            setAttachedFile(null);
+                            if (attachedFileRef.current) attachedFileRef.current.value = ''; // <--- ZMIENIONY onClick
+                        }}
+                       
+                        title="Usuń załącznik"
+ /*to jest od buttona*/>
+                        X
+                    </button>
+                </div>
+            )}
+
             {/* Dolny pasek z przyciskiem */}
+
+
             <div className="chatInputBar">
+                {/* Okno z ekploatorem plikow*/}
+                <input
+                    type="file"
+                    accept=".pdf"
+                    ref={attachedFileRef}
+                    className="fileExplolerWindow"
+                    onChange={(e) => setAttachedFile(e.target.files[0])}
+                />
+
+                {/* Przycisk spinacza*/}
+                <button
+                    onClick={() => attachedFileRef.current.click()}
+                    disabled={isResponsing || !isSessionOnline}
+                    className="paperClipButton"
+                    title="Załącz plik PDF"
+                >
+                    📎
+                </button>
                 <input
                     type="text"
                     value={userInput}
@@ -141,6 +209,7 @@ export default function TextInput() {
                     placeholder={inputBarMessage}
                     disabled={isResponsing || !isSessionOnline} //Blokada jak myśli lub out of sesji
                 />
+
                 <button onClick={handleSend} disabled={isResponsing || !userInput.trim() || !isSessionOnline}>
                     Wyślij
                 </button>

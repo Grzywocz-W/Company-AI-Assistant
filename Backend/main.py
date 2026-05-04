@@ -1,16 +1,21 @@
+#!pip install python-multipart
 import os
 ### zwalnanie pamięci
 import time
 import asyncio
 from contextlib import asynccontextmanager
+#obsługa PDF'a
+#import io 
+#import pypdf
 ####API
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 ###AI
 from agents.coordinator import CoordinatorAgent
 from models import modelsList
+from helpers import extractFromPDF
 
 sessionLifespan = 1800#sekund 30 min.
 
@@ -56,15 +61,28 @@ model = modelsList.gemi3_1_fl
 #jeden użytkwonik = jedna sesja
 sessionsDict= {}#'Michal', <obiekt>
 #!!!!!DODAĆ ZWALNANIE PAMIĘCI!!!!!!!
-class messageRequest(BaseModel):
-    sessionID: str#liczba dla klientów, tekst dla admina itp.
-    text: str
+
+
+#przez dodanie załącznika pdf nie wysyłamy już Message requesta
+#class messageRequest(BaseModel):
+#    sessionID: str#liczba dla klientów, tekst dla admina itp.
+#    text: str
+
+
+acceptedFilesFromat = ['PDF']#na przyszłość do rozbudowy
+
 
 @react.post("/chat")
-def feedback(request: messageRequest):
+async def feedback(
+    sessionID: str = Form(...),
+    request: str = Form(...),#ID i prompt są teraz jak formularz
+    attachedFile: UploadFile = File(None)# jako opcjonalny plik
+    ):
+#async def feedback(request: messageRequest):#asynchroniczna aby otrzymać pdf'a
     try:
-        currentSession = request.sessionID
-
+        #currentSession = request.sessionID
+        currentSession = sessionID
+        
         now = time.time()
         if currentSession not in sessionsDict:
             sessionsDict[currentSession] ={#nie można dać do następnej linijki
@@ -73,8 +91,16 @@ def feedback(request: messageRequest):
             }
         else:
             sessionsDict[currentSession]['born'] = now
+
+        if attachedFile and attachedFile.filename.endswith('.pdf'):
+            pdfContent = await attachedFile.read()#jest to funkcja asynchroniczna
+            textFromPdf = extractFromPDF(pdfContent)
             
-        response = sessionsDict[currentSession]['agent'].coordinatorResponse(request.text)
+            request = f"Zawartość pliku PDF załączona przez użytkownika: \n {textFromPdf}  \n Pytanie użytkownika: \n" + request
+            
+            
+        #response = sessionsDict[currentSession]['agent'].coordinatorResponse(request.text)
+        response = sessionsDict[currentSession]['agent'].coordinatorResponse(request)
         
         #return {'result': response.content}
         return {'result': response}
