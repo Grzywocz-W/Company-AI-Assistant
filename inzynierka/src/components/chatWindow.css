@@ -1,4 +1,7 @@
-/*VS sam ustawia sobie formatowanie kodu.*/
+ï»¿/*VS sam ustawia sobie formatowanie kodu.*/
+/*chatWindows.cs*/
+
+/*IMPORTANT kasem server siÄ™ zawiesi lub przeglÄ…darka i trzeba go zresetowaÄ‡ i zrobiÄ‡ w przegladarcel crtl+ shift + R*/
 /*Okno chatu */
 .chatWindow 
 {
@@ -18,19 +21,19 @@
 .chatHistory {
     padding: 20px;
     flex-direction: column;
-    gap: 15px; /* ostêpny miêdzy dymkami */
-    flex: 1; /* rozci¹ganie */
+    gap: 15px; /* ostÄ™pny miÄ™dzy dymkami */
+    flex: 1; /* rozciÄ…ganie */
     display: flex;
     overflow-y: auto; /* przewijanie*/
 }
 
-/* Wiersz wiadomoœci - ca³a szerokoœæ */
+/* Wiersz wiadomoÅ›ci - caÅ‚a szerokoÅ›Ä‡ */
 .messageRow {
     width: 100%;
     display: flex;
 }
 
-    /* U¯YTKOWNIK na prawo */
+    /* UÅ»YTKOWNIK na prawo */
     .messageRow.user {
         justify-content: flex-end;
     }
@@ -42,11 +45,11 @@
 
 /* "Dymek" z tekstem */
 .messageBubble {
+    font-size: 16px;
     max-width: 75%;
-    border-radius: 18px;
-    padding: 12px 18px;
-    font-size: 20px;
-    line-height: 2;
+    border-radius: 12px;
+    padding: 4px 8px;
+    line-height: 1.2;
     text-align: left;
     word-wrap: break-word;
 }
@@ -100,20 +103,22 @@
 /* Markdown**/
 
 .messageBubble p {
+    font-size: inherit;
     margin: 0 0 10px 0;
 }
 
     .messageBubble p:last-child {
+        font-size: inherit;
         margin-bottom: 0;
     }
 
 /* Punktory */
 .messageBubble ul, .messageBubble ol {
     margin: 5px 0 10px 20px;
-    padding-left: 20px;/*Aby nie ucina³o punktorów*/
+    padding-left: 20px;/*Aby nie ucinaÅ‚o punktorÃ³w*/
 }
 
-/* Bloki kodu, zablokowaæ mu mo¿liwoœæ generowania*/
+/* Bloki kodu, zablokowaÄ‡ mu moÅ¼liwoÅ›Ä‡ generowania*/
 .messageBubble pre {
     background-color: #1a1a1a;
     border-radius: 6px;
@@ -126,11 +131,11 @@
     background-color: rgba(0, 0, 0, 0.2);
     padding: 4px 6px;
     border-radius: 3px;
-    font-size: 0.8em;
+    font-size: inherit;
     font-family: 'Courier New', Courier, monospace;
 }
 
-/* wy³¹cznie dublowania t³a*/
+/* wyÅ‚Ä…cznie dublowania tÅ‚a*/
 .messageBubble pre code {
     background-color: transparent;
     padding: 0;
@@ -138,7 +143,7 @@
 
 
 
-/*Przycisk z za³¹cznikiem*/
+/*Przycisk z zaÅ‚Ä…cznikiem*/
 
 .fileAttachButton {
     padding: 8px 15px;
@@ -178,12 +183,18 @@
 /*Spinacz*/
 
 .chatInputBar button.paperClipButton {
-    font-size: 25px;/*Wielkoœæ spinacza*/
+    font-size: 30px;
     padding: 10px 15px;
     color: white;
     background-color: #444;
     margin-right: 10px;
-    border-radius: 50%;
+    border-radius: 50%;/*to co poniÅ¼ej to do walki z formatem*/
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    justify-content: center;
 }
 
     .chatInputBar button.paperClipButton:hover {
@@ -195,3 +206,5 @@
         cursor: not-allowed;
         opacity: 0.7;
     }
+
+
