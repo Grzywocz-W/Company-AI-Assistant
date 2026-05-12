@@ -11,6 +11,7 @@ import {
     sendTextToFastAPI
 } from '../api/fastApiConnector';
 import './ChatWindow.css';
+import { AgentCallingStatusEnum } from '../constants/agentCallingStatus';
 
 export default function TextInput() {
     const [userInput, setUserInput] = useState('');
@@ -25,6 +26,8 @@ export default function TextInput() {
 
     const [attachedFile, setAttachedFile] = useState(null);//nieobowiązkowe
     const attachedFileRef = useRef(null);
+
+    const [responseStatus, setResponseStatus] = useState("THINKING");
 
     const updateSessionTime = () =>
     {
@@ -96,13 +99,16 @@ export default function TextInput() {
 
         setIsResponsing(true);
 
+        setResponseStatus("THINKING");
+
         try
         {
             //wosobnym pliku
             const result = await sendTextToFastAPI(
                 messageContent,
                 sessionID,
-                fileAttachedToMessage
+                fileAttachedToMessage,
+                (newStatus) => { setResponseStatus(newStatus) }//callback z serwera. Przychodzi paczka: z onStatusChange(dataFromJson.data)
             );
 
             const newMessageTMP = {role: 'ai', text: result}
@@ -149,10 +155,12 @@ export default function TextInput() {
                 )
                 }
 
-                {/* "pisze..." */}
+                {/* Pobiera info ze zmiennej co robi */}
                 {isResponsing && (
                     <div className="messageRow ai">
-                        <div className="messageBubble ai">Agent myśli...</div>
+                        <div className="messageBubble ai">
+                            {AgentCallingStatusEnum[responseStatus] || AgentCallingStatusEnum.THINKING}
+                        </div>
                     </div>
                 )}
             </div>
@@ -169,7 +177,10 @@ export default function TextInput() {
                         onClick={() =>
                         {
                             setAttachedFile(null);
-                            if (attachedFileRef.current) attachedFileRef.current.value = ''; // <--- ZMIENIONY onClick
+                            if (attachedFileRef.current)
+                            {
+                                attachedFileRef.current.value = '';
+                            } // <--- ZMIENIONY onClick
                         }}
                        
                         title="Usuń załącznik"

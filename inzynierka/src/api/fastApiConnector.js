@@ -1,6 +1,6 @@
 //fastApiConnector
 
-export const sendTextToFastAPI = async (text, sessionID, attachedFile = null) =>
+export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, onStatusChange = null) =>
 {
     const requestDataForm = new FormData();//aby dodaæ pdf'a trzeba stworzyæ forma
 
@@ -33,16 +33,68 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null) =>
             throw new Error('B³¹d sieci z FastAPI');
         }
 
-        const data = await response.json();
-        //return data.result;
-        if (typeof data.result === "object" && data.result !== null)// przez LangChaina Python zwraca signature odpowiedzi, wiêc doda³em zabezpiecznie. Uwa¿aj Wojtek.
+        const toolCallingStreamReader = response.body.getReader();//odczyt kawa³ek po kawa³ku
+        const textDeconder = new TextDecoder();//dane to surowe bajty
+
+        let streamBuffer = '';
+        let streamOutput = '';
+
+        while (true)//dzia³a tak d³ugo, a¿ stream siê nie zakoñczy
+        {           //nazwy te s¹ zdefiniowane przez reacta
+            const { done, value } = await toolCallingStreamReader.read();//czeka na wywo³anie narzêdzia
+
+            if (done)
+            {
+                break;
+            }
+
+
+            streamBuffer = streamBuffer + textDeconder.decode(value, { stream: true });
+
+            const lines = streamBuffer.split('\n');
+
+            streamBuffer = lines.pop();//ostatnielinijka mo¿e nie byæ pe³na
+
+            for (const line of lines)// of nie in
+            {
+                if (line.trim() != '')//wyci¹gamy wartoœci z pól
+                {
+                    const dataFromJson = JSON.parse(line);
+
+                    if (dataFromJson.type === "status" && onStatusChange) {
+                        onStatusChange(dataFromJson.data)
+                    }
+                    else if (dataFromJson.type === "final")
+                    {
+                        streamOutput = dataFromJson.data;
+                    }
+                    else if (dataFromJson.type === "error")
+                    {
+                        throw new Error(dataFromJson.data);
+                    }
+                }
+            }
+        }//while
+
+        if (typeof streamOutput === "object" && streamOutput !== null)//LangChain lubi zwracaæ obiekt, a nie stringa
         {
-            return data.result.text || JSON.stringify(data.result)
+            return streamOutput.text || JSON.stringify(streamOutput)
         }
 
-        return data.result;
+        return streamOutput;
 
-    } catch (error) {
+        //const data = await response.json();
+        ////return data.result;
+        //if (typeof data.result === "object" && data.result !== null)// przez LangChaina Python zwraca signature odpowiedzi, wiêc doda³em zabezpiecznie. Uwa¿aj Wojtek.
+        //{
+        //    return data.result.text || JSON.stringify(data.result)
+        //}
+
+        //return data.result;
+
+    }
+    catch (error)
+    {
         console.error("Wyst¹pi³ b³¹d podczas wysy³ania:", error);
         throw error; // Rzucamy b³¹d dalej, aby obs³u¿yæ go w komponencie
     }

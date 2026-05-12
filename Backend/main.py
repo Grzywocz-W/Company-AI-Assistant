@@ -12,10 +12,13 @@ import uvicorn
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from fastapi.responses import StreamingResponse
+import json
 ###AI
 from agents.coordinator import CoordinatorAgent
 from models import modelsList
 from helpers import extractFromPDF
+
 
 sessionLifespan = 1800#sekund 30 min.
 
@@ -98,12 +101,37 @@ async def feedback(
             
             request = f"Zawartość pliku PDF załączona przez użytkownika: \n {textFromPdf}  \n Pytanie użytkownika: \n" + request
             
+        queue = asyncio.Queue()
+
+        async def executeAgent():
+            try:
+                agent = sessionsDict[currentSession]['agent']
+                response =await agent.coordinatorResponse(request, queue)
+                await queue.put(json.dumps(
+                    {"type": "final", "data": response}
+                    ))
+
+            except Exception as e:
+                await queue.put(json.dumps({"type": "error", "data": str(e)}))
+            finally:
+                await queue.put(None)
+                
+        async def responseStream():
+            reciver =asyncio.create_task(executeAgent())
             
+            while True:
+                messageTMP = await queue.get()
+                if messageTMP is None:
+                    break
+                
+                yield f"{messageTMP}\n"
+
+        return StreamingResponse(responseStream(), media_type="application/x-ndjson")
         #response = sessionsDict[currentSession]['agent'].coordinatorResponse(request.text)
-        response = sessionsDict[currentSession]['agent'].coordinatorResponse(request)
+        #response = sessionsDict[currentSession]['agent'].coordinatorResponse(request)
         
         #return {'result': response.content}
-        return {'result': response}
+        #return {'result': response}
     except Exception as e:
         return {'result': f'Error {str(e)}'}
 

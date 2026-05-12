@@ -1,5 +1,6 @@
 #coordinator.py
 import os
+import asyncio
 ###AI
 from langchain_google_genai import ChatGoogleGenerativeAI
 #from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
@@ -14,6 +15,7 @@ from models import modelsList
 from agents.database_agent import DataBaseAgent
 from agents.RAG_agent import RagAgent
 from agents.internet_agent import InternetAgent
+from reportAgentStatus import AgentStatusAsyncCallbackHandler
 
 api_key = os.getenv("Gemini_API_Key")
 
@@ -98,13 +100,20 @@ class CoordinatorAgent:
         )
 
 
-    def coordinatorResponse(self, inputText: str):
+    async def coordinatorResponse(self, inputText: str, queue: asyncio.Queue):
         #inputMessage = HumanMessage(content=inputText)
         #self.chatHistory.append(inputMessage)
         #response = self.agent.invoke(self.chatHistory)
         #self.chatHistory.append(response)###trzeba dodać!!!!
-        response = self.agentChat.invoke(
-            {"input": inputText}, config ={"configurable": {"session_id":"local_session"}}
+        callingListener = AgentStatusAsyncCallbackHandler(queue)
+        
+        response = await self.agentChat.ainvoke(#ainvoke, gdyż asynchroniczne
+            {"input": inputText},
+            config = {
+                "callbacks": [callingListener],
+                "configurable":
+                    {"session_id":"local_session"}
+                },
             )
         
 
