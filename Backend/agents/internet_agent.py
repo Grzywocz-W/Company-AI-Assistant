@@ -12,6 +12,7 @@ from langchain_core.tools import Tool
 from langchain_community.tools import DuckDuckGoSearchRun
 ###
 from models import modelsList
+from modelSelector import createLLM
 #
 api_key = os.getenv("Gemini_API_Key")
 
@@ -19,12 +20,12 @@ api_key = os.getenv("Gemini_API_Key")
 
 class InternetAgent:
     def __init__(self, model: modelsList):
-        
-        self.agent = ChatGoogleGenerativeAI(
-            model=model.value,#jest to enum, a nie tablica
-            google_api_key=api_key,
-            temperature=0.3#Wyższa kreatywność
-            )
+        self.agent = createLLM(model, temperature=0.3)
+##        self.agent = ChatGoogleGenerativeAI(
+##            model=model.value,#jest to enum, a nie tablica
+##            google_api_key=api_key,
+##            temperature=0.3#Wyższa kreatywność
+##            )
         
         self.searchInternet = DuckDuckGoSearchRun()
         

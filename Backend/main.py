@@ -18,6 +18,7 @@ import json
 from agents.coordinator import CoordinatorAgent
 from models import modelsList
 from helpers import extractFromPDF
+from configLoader import loadConfig
 
 
 sessionLifespan = 1800#sekund 30 min.
@@ -58,7 +59,20 @@ react.add_middleware(
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
-model = modelsList.gemi3_1_fl
+
+
+defaultModel ="gemi3_1_fl"
+
+backendConfig = loadConfig('config.txt')
+modelName = backendConfig.get("MAIN_MODEL", defaultModel)
+
+try:
+    model = modelsList[modelName]
+except Exception as e:
+    print("Nie ma takiego modelu")
+    model = modelsList[defaultModel]
+
+#model = modelsList.gemi3_1_fl
 #coordAgent = CoordinatorAgent(model=model)
 
 #jeden użytkwonik = jedna sesja

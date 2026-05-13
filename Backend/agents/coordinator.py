@@ -12,10 +12,12 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import Tool
 ####
 from models import modelsList
+from modelSelector import createLLM
 from agents.database_agent import DataBaseAgent
 from agents.RAG_agent import RagAgent
 from agents.internet_agent import InternetAgent
 from reportAgentStatus import AgentStatusAsyncCallbackHandler
+
 
 api_key = os.getenv("Gemini_API_Key")
 
@@ -23,12 +25,12 @@ docsPath = "vectorDB"
 
 class CoordinatorAgent:
     def __init__(self, model: modelsList):
-        
-        self.agent = ChatGoogleGenerativeAI(
-            model=model.value,#jest to enum, a nie tablica
-            google_api_key=api_key,
-            temperature=0.0#brak kreatywności. Trzyma się prompta.
-            )
+        self.agent = createLLM(model, temperature=0.0)
+        #self.agent = ChatGoogleGenerativeAI(
+        #    model=model.value,#jest to enum, a nie tablica
+        #    google_api_key=api_key,
+        #    temperature=0.0#brak kreatywności. Trzyma się prompta.
+        #    )
 
         #self.chatHistory = []
         #========================AGENCI========================#

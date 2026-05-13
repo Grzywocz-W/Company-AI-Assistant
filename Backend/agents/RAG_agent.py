@@ -11,6 +11,7 @@ from langchain_core.tools import Tool
 from langchain_community.vectorstores import FAISS
 ###
 from models import modelsList
+from modelSelector import createLLM
 #
 api_key = os.getenv("Gemini_API_Key")
 
@@ -18,12 +19,12 @@ api_key = os.getenv("Gemini_API_Key")
 
 class RagAgent:
     def __init__(self, model: modelsList,db_path: str = "vectorDB"):
-        
-        self.agent = ChatGoogleGenerativeAI(
-            model=model.value,#jest to enum, a nie tablica
-            google_api_key=api_key,
-            temperature=0.1#małą kreatywność
-            )
+        self.agent = createLLM(model, temperature=0.0)
+##        self.agent = ChatGoogleGenerativeAI(
+##            model=model.value,#jest to enum, a nie tablica
+##            google_api_key=api_key,
+##            temperature=0.1#małą kreatywność
+##            )
 
         
         embeddedModel = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001", google_api_key=api_key)

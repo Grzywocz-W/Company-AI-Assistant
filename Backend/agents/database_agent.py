@@ -12,10 +12,15 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import Tool
 ####
 from models import modelsList
+from modelSelector import createLLM
 
 api_key = os.getenv("Gemini_API_Key")
 
-
+# Na górze pliku database_agent.py
+DB_HOST = "localhost"
+DB_USER = "root"
+DB_PASSWORD = ""
+DB_NAME = "sklep"
 
 
 def askDataBase(sql_query: str):
@@ -48,12 +53,12 @@ def askDataBase(sql_query: str):
 
 class DataBaseAgent:
     def __init__(self, model: modelsList):
-        
-        self.agent = ChatGoogleGenerativeAI(
-            model=model.value,#jest to enum, a nie tablica
-            google_api_key=api_key,
-            temperature=0.1#małą kreatywność
-            )
+        self.agent = createLLM(model, temperature=0.1)
+##        self.agent = ChatGoogleGenerativeAI(
+##            model=model.value,#jest to enum, a nie tablica
+##            google_api_key=api_key,
+##            temperature=0.1#małą kreatywność
+##            )
 
         #self.chatHistory = []
 
@@ -76,7 +81,8 @@ class DataBaseAgent:
         Otrzymujesz polecenie od Koordynatora. Masz za zadanie przetłumaczenie ich na SQL i wykonanie tylko tego zapytania.
         
         Struktura bazych danych:
-        {SCHEMA_INFO}
+        - produkty (id, nazwa, cena, opis)
+        - pracownicy (id, imie, nazwisko, stanowisko)
 
         ZASADY:
         1. ZAWSZE używaj narzędzia dataBaseQuerryTOOL.

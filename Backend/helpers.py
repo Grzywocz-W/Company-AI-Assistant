@@ -11,3 +11,4 @@ def extractFromPDF(file_content_bytes: bytes):
             textInPdf += textFromPage
 
     return str(textInPdf)#zabezpieczenie
+
