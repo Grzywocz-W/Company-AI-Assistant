@@ -13,11 +13,11 @@ import {
 import './ChatWindow.css';
 import { AgentCallingStatusEnum } from '../constants/agentCallingStatus';
 
-export default function TextInput() {
+export default function ChatWindow() {
     const [userInput, setUserInput] = useState('');
     //const [responseText, setResponseText] = useState('');//chyba niepotrzebne
     const [messagesList, setMessagesList] = useState([]);
-    const [isResponsing, setIsResponsing] = useState(false);//domyślnie nie odpowiada
+    const [isResponding, setIsResponding] = useState(false);//domyślnie nie odpowiada
 
     const [sessionID, setSessionID] = useState("");
 
@@ -30,6 +30,10 @@ export default function TextInput() {
     const [responseStatus, setResponseStatus] = useState("THINKING");
 
     const [isAdminControl, setIsAdminControl] = useState(false);
+
+    const [isAdminPanelVisible, setIsAdminPanelVisible] = useState(false);
+    const [adminPassword, setAdminPassword] = useState("");
+    const [hasAdminAccess, setHasAdminAccess] = useState(false);
 
     const updateSessionTime = () =>
     {
@@ -87,7 +91,7 @@ export default function TextInput() {
 
     const handleSend = async () =>
     {
-        if (!userInput.trim() || isResponsing || !isSessionOnline)//blokada
+        if (!userInput.trim() || isResponding || !isSessionOnline)//blokada
         {
             return;
         }
@@ -117,7 +121,7 @@ export default function TextInput() {
         setMessagesList((prev) => [...prev, newMessageTMP]);//prev, bo jak lista jest w await to cały czas pamięta poprzednią wersje
 
 
-        setIsResponsing(true);
+        setIsResponding(true);
 
         setResponseStatus("THINKING");
 
@@ -144,7 +148,7 @@ export default function TextInput() {
             
         }
 
-        setIsResponsing(false);
+        setIsResponding(false);
     };
 
 
@@ -159,18 +163,90 @@ export default function TextInput() {
         inputBarMessage = "Sesja wygasła. Odśwież stronę.";
     }
 
+    const handleAdminLogin = async () => {
+        if (!adminPassword.trim())
+        {
+            return;
+        }
+
+        try
+        {
+            const response = await fetch('http://127.0.0.1:8000/admin-login',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: adminPassword })
+            });
+
+            const loginData = await response.json()
+
+            if (loginData.status === "correct") {
+                setHasAdminAccess(true);
+                console.log("Logowanie na admina")
+
+            }
+            else
+            {
+                console.log("Niepoprawna próba logowania na admina")
+            }
+
+
+
+        }
+        catch(error)
+        {
+            console.error("Błąd przy logowania", error)
+        }
+
+
+        //czyścimy okienko
+        setAdminPassword('');
+        setIsAdminPanelVisible(false);
+    };
+
     return (
-        <div className="chatWindow">
-            {/*dostęp do panelu admina*/ }
-            {isAdminControl && (
-                <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 15px', borderBottom: '1px solid #444' }}>
+        /*<div className="chatWindow">*/
+        <div className={`chatWindow ${hasAdminAccess ? 'masterMode' : ''}`}>
+            {/*panel admina*/ }
+            {isAdminControl &&
+                (
+                <div className="adminHeader">
                     <button
-                        onClick={() => alert("Panel logowania admina")}
+                        className="adminLoginButton"
+                        onClick={() => setIsAdminPanelVisible(true)}
                         title="Admin Login Panel"
-                        style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer' }}
                     >
-                        ⚙️
+                      ⚙️
                     </button>
+                </div>
+            )}
+            {/*okno logowania*/ }
+            {isAdminPanelVisible &&
+                (
+                <div className="adminPanelWindow">
+                    <div className="adminPanelWindowPage">
+                        <h3>🔒 Dostęp do panelu logowania</h3>
+                        <p>Podaj hasło:</p>
+                        <input
+                            type="password"
+                            value={adminPassword}
+                            onChange={(e) => setAdminPassword(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleAdminLogin()}
+                            autoFocus
+                        />
+                        <div className="adminPanelWindowButtons">
+                            <button className="exitBtn" onClick={() =>
+                            {
+                                setIsAdminPanelVisible(false);
+                                setAdminPassword('');
+                            }
+                            }>Anuluj
+                            </button>
+                            <button className="loginBtn" onClick={handleAdminLogin}>
+                                Zaloguj
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -188,7 +264,7 @@ export default function TextInput() {
                 }
 
                 {/* Pobiera info ze zmiennej co robi */}
-                {isResponsing && (
+                {isResponding && (
                     <div className="messageRow ai">
                         <div className="messageBubble ai thinking">
                             {AgentCallingStatusEnum[responseStatus] || AgentCallingStatusEnum.THINKING}
@@ -238,7 +314,7 @@ export default function TextInput() {
                 {/* Przycisk spinacza*/}
                 <button
                     onClick={() => attachedFileRef.current.click()}
-                    disabled={isResponsing || !isSessionOnline}
+                    disabled={isResponding || !isSessionOnline}
                     className="paperClipButton"
                     title="Załącz plik PDF"
                 >
@@ -250,10 +326,10 @@ export default function TextInput() {
                     onChange={(e) => setUserInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()} //Enter
                     placeholder={inputBarMessage}
-                    disabled={isResponsing || !isSessionOnline} //Blokada jak myśli lub out of sesji
+                    disabled={isResponding || !isSessionOnline} //Blokada jak myśli lub out of sesji
                 />
 
-                <button onClick={handleSend} disabled={isResponsing || !userInput.trim() || !isSessionOnline}>
+                <button onClick={handleSend} disabled={isResponding || !userInput.trim() || !isSessionOnline}>
                     Wyślij
                 </button>
             </div>

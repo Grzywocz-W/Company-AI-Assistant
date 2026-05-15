@@ -132,14 +132,15 @@ async def feedback(
                 
         async def responseStream():
             reciver =asyncio.create_task(executeAgent())
-            
-            while True:
-                messageTMP = await queue.get()
-                if messageTMP is None:
-                    break
-                
-                yield f"{messageTMP}\n"
-
+            try:
+                while True:
+                    messageTMP = await queue.get()
+                    if messageTMP is None:
+                        break
+                    
+                    yield f"{messageTMP}\n"
+            finally:
+                await reciver
         return StreamingResponse(responseStream(), media_type="application/x-ndjson")
         #response = sessionsDict[currentSession]['agent'].coordinatorResponse(request.text)
         #response = sessionsDict[currentSession]['agent'].coordinatorResponse(request)
@@ -167,5 +168,29 @@ async def checkUserIp(request: Request):
     if userIp in adminIpList:
         adminControl = True
     return {"is-admin-control-allowed": adminControl}
+
+
+class AdminLoginRequest(BaseModel):
+    password: str
+
+
+@react.post("/admin-login")
+async def checkAdminPassword(request: AdminLoginRequest):
+    password = backendConfig.get("ADMIN_PASSWORD")
+    if not password:
+        ValueError("brak hasła")
+
+    if request.password == password:
+        feedback = {
+            "status":"correct",
+            "message": "Zalogowano"
+            }
+        return feedback
+    else:
+        feedback = {
+            "status":"error",
+            "message": "loginErr4r"
+            }
+        return feedback
     
 
