@@ -1,17 +1,26 @@
 ﻿/*VS sam ustawia sobie formatowanie kodu.*/
 /*chatWindows.cs*/
 
+
+
+:root {
+    --bg-main: #1e1e1e;
+    --bg-panel: #252525;
+    --bg-bubble-ai: #333;
+    --bg-mrk-code: #1a1a1a;
+    --bg-attach: #2a2a2a;
+}
+
 /*IMPORTANT kasem server się zawiesi lub przeglądarka i trzeba go zresetować i zrobić w przegladarcel crtl+ shift + R*/
 /*Okno chatu */
-.chatWindow 
-{
+.chatWindow {
     width: 100%;
     max-width: 800px;
     height: 600px;
     margin: 20px auto;
     border: 1px solid #444;
     border-radius: 12px;
-    background-color: #1e1e1e; /*Ciemny motyw*/
+    background-color: var(--bg-main); /*Ciemny motyw*/
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -61,7 +70,7 @@
     }
 
     .messageBubble.ai {
-        background-color: #333;
+        background-color: var(--bg-bubble-ai);
         color: #fff;
         border-bottom-left-radius: 4px;
     }
@@ -70,7 +79,7 @@
 .chatInputBar {
     padding: 15px;
     display: flex;
-    background-color: #252525;
+    background-color: var(--bg-panel);
     gap: 10px;
     border-top: 1px solid #444;
 }
@@ -78,11 +87,11 @@
     .chatInputBar input {
         padding: 12px;
         border-radius: 20px;
-        border:1px solid #555;
-        background-color: #333;
+        border: 1px solid #555;
+        background-color: var(--bg-bubble-ai);
         flex: 1;
-        color:white;
-        outline:none;
+        color: white;
+        outline: none;
     }
 
 .chatInputBar button {
@@ -120,7 +129,7 @@
 
 /* Bloki kodu, zablokować mu możliwość generowania*/
 .messageBubble pre {
-    background-color: #1a1a1a;
+    background-color: var(--bg-mrk-code);
     border-radius: 6px;
     margin: 10px 0;
     overflow-x: auto; /* Pasek przewijania!!!*/
@@ -148,7 +157,7 @@
 .fileAttachButton {
     padding: 8px 15px;
     color: #007bff;
-    background-color: #2a2a2a;
+    background-color: var(--bg-attach);
     border-top: 1px solid #444;
     font-size: 14px;
     display: flex;
@@ -202,9 +211,25 @@
     }
 
     .chatInputBar button.paperClipButton:disabled {
-        background-color: #333;
+        background-color: var(--bg-bubble-ai);
         cursor: not-allowed;
         opacity: 0.7;
     }
 
+.messageBubble.ai.thinking {
+    background: linear-gradient( 90deg, var(--bg-bubble-ai)
+    25%, #444 50%, var(--bg-bubble-ai)
+    75% );
+    background-size: 150% 100%;
+    animation: flashingAnimation 1s infinite linear;
+}
 
+@keyframes flashingAnimation {
+    0% {
+        background-position: 175% 0;
+    }
+
+    100% {
+        background-position: -175% 0;
+    }
+    

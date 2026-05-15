@@ -29,6 +29,8 @@ export default function TextInput() {
 
     const [responseStatus, setResponseStatus] = useState("THINKING");
 
+    const [isAdminControl, setIsAdminControl] = useState(false);
+
     const updateSessionTime = () =>
     {
         if (sessionTimer.current)
@@ -53,6 +55,22 @@ export default function TextInput() {
         const randSessID = "ses_" + crypto.randomUUID();;//potem dodać numerowanie sesji
         setSessionID(randSessID);// podkreśla bo nie generuje losowe treści i taki jest problem
 
+        //najpierw sprawdzamy ip admina, potem timer
+        const adminIpVerification = async () => {
+            try {
+                const ipResponse = await fetch('http://127.0.0.1:8000/check-ip');
+                const isAdminPrivAllowed = await ipResponse.json();
+
+                if (isAdminPrivAllowed['is-admin-control-allowed'] === true) {
+                    setIsAdminControl(true);
+                }
+            }
+            catch (error) {
+                console.error("Nie da się sprawdzić IP:", error);
+            }
+        };
+        adminIpVerification();
+
 
         updateSessionTime();
         return () =>
@@ -62,6 +80,8 @@ export default function TextInput() {
                 clearTimeout(sessionTimer.current)
             }
         }
+
+        
     },[]
     );
 
@@ -141,6 +161,18 @@ export default function TextInput() {
 
     return (
         <div className="chatWindow">
+            {/*dostęp do panelu admina*/ }
+            {isAdminControl && (
+                <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 15px', borderBottom: '1px solid #444' }}>
+                    <button
+                        onClick={() => alert("Panel logowania admina")}
+                        title="Admin Login Panel"
+                        style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer' }}
+                    >
+                        ⚙️
+                    </button>
+                </div>
+            )}
 
             {/* Główne okno z historią */}
             <div className="chatHistory">
@@ -158,7 +190,7 @@ export default function TextInput() {
                 {/* Pobiera info ze zmiennej co robi */}
                 {isResponsing && (
                     <div className="messageRow ai">
-                        <div className="messageBubble ai">
+                        <div className="messageBubble ai thinking">
                             {AgentCallingStatusEnum[responseStatus] || AgentCallingStatusEnum.THINKING}
                         </div>
                     </div>

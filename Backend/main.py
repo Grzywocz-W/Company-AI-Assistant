@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 #import pypdf
 ####API
 import uvicorn
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, File, UploadFile, Form,Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from fastapi.responses import StreamingResponse
@@ -149,4 +149,23 @@ async def feedback(
     except Exception as e:
         return {'result': f'Error {str(e)}'}
 
+
+
+
+@react.get("/check-ip")
+async def checkUserIp(request: Request):
+    userIp = request.headers.get("X-Forwarded-For", request.client.host).split(",")[0].strip()
+    
+    configAdminIps = backendConfig.get("ALLOWED_ADMIN_IP", "127.0.0.1")
+    adminIps = configAdminIps.split(",")
+    
+    adminIpList = []
+    for ip in adminIps:
+        adminIpList.append(ip.strip())
+        
+    adminControl = False
+    if userIp in adminIpList:
+        adminControl = True
+    return {"is-admin-control-allowed": adminControl}
+    
 
