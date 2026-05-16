@@ -132,6 +132,7 @@ export default function ChatWindow() {
                 messageContent,
                 sessionID,
                 fileAttachedToMessage,
+                hasAdminAccess,
                 (newStatus) => { setResponseStatus(newStatus) }//callback z serwera. Przychodzi paczka: z onStatusChange(dataFromJson.data)
             );
 

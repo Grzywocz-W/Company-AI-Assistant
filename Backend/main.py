@@ -1,5 +1,7 @@
 #!pip install python-multipart
+#!pip install bcrypt
 import os
+import traceback
 ### zwalnanie pamięci
 import time
 import asyncio
@@ -8,6 +10,7 @@ from contextlib import asynccontextmanager
 #import io 
 #import pypdf
 ####API
+import bcrypt
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, Form,Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -93,6 +96,7 @@ acceptedFilesFromat = ['PDF']#na przyszłość do rozbudowy
 async def feedback(
     sessionID: str = Form(...),
     request: str = Form(...),#ID i prompt są teraz jak formularz
+    isAdmin:bool = Form(False),
     attachedFile: UploadFile = File(None)# jako opcjonalny plik
     ):
 #async def feedback(request: messageRequest):#asynchroniczna aby otrzymać pdf'a
@@ -120,7 +124,7 @@ async def feedback(
         async def executeAgent():
             try:
                 agent = sessionsDict[currentSession]['agent']
-                response =await agent.coordinatorResponse(request, queue)
+                response =await agent.coordinatorResponse(request, queue, isAdmin)
                 await queue.put(json.dumps(
                     {"type": "final", "data": response}
                     ))
@@ -148,6 +152,10 @@ async def feedback(
         #return {'result': response.content}
         #return {'result': response}
     except Exception as e:
+        print(f"\n[!!!] KRYTYCZNY BŁĄD W MAIN.PY: {str(e)}\n")
+        
+        traceback.print_exc()
+        
         return {'result': f'Error {str(e)}'}
 
 
@@ -176,21 +184,32 @@ class AdminLoginRequest(BaseModel):
 
 @react.post("/admin-login")
 async def checkAdminPassword(request: AdminLoginRequest):
-    password = backendConfig.get("ADMIN_PASSWORD")
-    if not password:
+    passwordsHash = backendConfig.get("ADMIN_PASSWORD")
+    if not passwordsHash:
         ValueError("brak hasła")
 
-    if request.password == password:
-        feedback = {
+
+    try:
+        isCorrect = bcrypt.checkpw(
+            request.password.encode('utf-8'),
+            passwordsHash.encode('utf-8')
+            )
+        if isCorrect:
+            feedback = {
             "status":"correct",
             "message": "Zalogowano"
             }
-        return feedback
-    else:
-        feedback = {
-            "status":"error",
-            "message": "loginErr4r"
-            }
-        return feedback
+            return feedback
+        else:
+            feedback = {
+                "status":"error",
+                "message": "loginErr4r"
+                }
+            return feedback
+    except Exception as e:
+        print(f"Błąd logowania: {e}")
+        return {"status": "error", "message": "Błąd backedna"}
+
+
     
 

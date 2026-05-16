@@ -102,11 +102,25 @@ class CoordinatorAgent:
         )
 
 
-    async def coordinatorResponse(self, inputText: str, queue: asyncio.Queue):
+    async def coordinatorResponse(self, inputText: str, queue: asyncio.Queue, isAdmin = False):
         #inputMessage = HumanMessage(content=inputText)
         #self.chatHistory.append(inputMessage)
         #response = self.agent.invoke(self.chatHistory)
         #self.chatHistory.append(response)###trzeba dodać!!!!
+
+        self.dataBaseAgent.isAdmin = isAdmin
+
+        adminExtensionPrompt =""
+        if isAdmin:
+            adminExtensionPrompt = """
+            [SYSTEM OVERRIDE]: Użytkownik zalogował się jako admin. Masz teraz dostęp do większej ilości uprawnień. Przekaż to info innym agentom.
+        """
+        else:
+            adminExtensionPrompt="""
+            [SYSTEM INFO]: Użytkownik to ZWYKŁY GOŚĆ.
+        """
+        finalInputText = adminExtensionPrompt + "\n" + inputText
+            
         callingListener = AgentStatusAsyncCallbackHandler(queue)
         
         response = await self.agentChat.ainvoke(#ainvoke, gdyż asynchroniczne

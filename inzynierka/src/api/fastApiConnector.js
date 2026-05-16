@@ -1,12 +1,16 @@
 //fastApiConnector
 
-export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, onStatusChange = null) =>
+export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, isAdmin = false, onStatusChange = null) =>
 {
     const requestDataForm = new FormData();//aby dodaæ pdf'a trzeba stworzyæ forma
 
     //nazwy pól musz¹ siê zgadzaæ z tym co jest w main.py
     requestDataForm.append('sessionID', sessionID);
     requestDataForm.append('request', text);
+
+    requestDataForm.append('isAdmin', isAdmin);
+
+
     if (attachedFile)
     {
         requestDataForm.append('attachedFile', attachedFile)

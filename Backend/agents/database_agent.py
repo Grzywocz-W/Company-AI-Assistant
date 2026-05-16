@@ -23,34 +23,6 @@ DB_PASSWORD = ""
 DB_NAME = "sklep"
 
 
-def askDataBase(sql_query: str):
-    #oczyszczenie z markdown, inaczej sql wywali error
-    sql_query = sql_query.replace("```sql", "").replace("```", "").strip()
-    
-    try:
-        conn = mysql.connector.connect(
-            host=DB_HOST,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            database=DB_NAME
-        )
-        
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute(sql_query)
-        
-        wyniki = cursor.fetchall()
-        
-        cursor.close()
-        conn.close()
-        if not wyniki:
-            return f"Wykonano zapytanie: {sql_query}, ale baza jest pusta lub nic nie pasuje."
-            
-        return f"Dane z bazy: {str(wyniki)}"
-
-    except mysql.connector.Error as err:
-        return f"BŁĄD MySQL: {err} | Próbowano wykonać: {sql_query}"
-
-
 class DataBaseAgent:
     def __init__(self, model: modelsList):
         self.agent = createLLM(model, temperature=0.1)
@@ -59,12 +31,13 @@ class DataBaseAgent:
 ##            google_api_key=api_key,
 ##            temperature=0.1#małą kreatywność
 ##            )
+        self.isAdmin = False
 
         #self.chatHistory = []
 
         self.tools =[
             Tool(name = "dataBaseQuerryTOOL",
-                 func= askDataBase,
+                 func= self.askDataBase,
                  description = "Używaj by zadać pytanie do bazy danych"
                  ),
             ]
@@ -87,7 +60,7 @@ class DataBaseAgent:
         ZASADY:
         1. ZAWSZE używaj narzędzia dataBaseQuerryTOOL.
         2. Do zapytania podawaj tylko treść w języku SQL (zaczynającą się od SELECT).
-        3. CAŁKOWITY ZAKAZ używania poleceń: DELETE, DROP, UPDATE, INSERT.
+        3. ZAKAZ używania poleceń: DELETE, DROP, UPDATE, INSERT chyba, że dostaniesz info, iż zalogował się admin.
         4. Jeśli zapytanie dotyczy tekstu, korzystaj z konstrukcji: LIKE '%fraza%'.
         
         Narzędzia: {tools}
@@ -115,10 +88,70 @@ class DataBaseAgent:
             handle_parsing_errors=True,
             )
 
+    def askDataBase(self, sql_query: str):
+    #oczyszczenie z markdown, inaczej sql wywali error
+        sql_query = sql_query.replace("```sql", "").replace("```", "").strip()
+
+        prohibitedActions = ["DELETE", "UPDATE", "INSERT", "DROP", "ALTER"]
+        hasProhibitedInQuery = False
+        for action in prohibitedActions:
+            if action in sql_query.upper():
+                hasProhibitedInQuery = True
+                break
+        
+        try:
+            if not self.isAdmin:#zazwyczaj nie będzie adminem a więc not False = True
+                if hasProhibitedInQuery:
+                    return "Odmowa dostępu. Niedozwolone polecenie"
+                loginHost=DB_HOST
+                loginUser=DB_USER
+                loginPassword=DB_PASSWORD
+                loginDatabase=DB_NAME
+            else:# dostęp admina. Potem się zmieni hasło
+                loginHost=DB_HOST
+                loginUser=DB_USER
+                loginPassword=DB_PASSWORD
+                loginDatabase=DB_NAME
+                
+            conn = mysql.connector.connect(
+                host=loginHost,
+                user=loginUser,
+                password=loginPassword,
+                database=loginDatabase
+            )
+            
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(sql_query)
+
+            if hasProhibitedInQuery:
+                conn.commit() # pozwala na zmainy do bazy
+                editedRows = cursor.rowcount #ile usuniętych rekordów
+                cursor.close()
+                conn.close()
+                return f"Dokonano modyfikacji {editedRows} wierszy"
+            
+            wyniki = cursor.fetchall()
+            
+            cursor.close()
+            conn.close()
+            if not wyniki:
+                return f"Wykonano zapytanie: {sql_query}, ale baza jest pusta lub nic nie pasuje."
+                
+            return f"Dane z bazy: {str(wyniki)}"
+
+        except mysql.connector.Error as err:
+            return f"BŁĄD MySQL: {err} | Próbowano wykonać: {sql_query}"
+
 
     def dataBaseAgentResponse(self, inputText: str):
+
+        if self.isAdmin:
+            additionalInfo =" [SYSTEM OVERRIDE]: Użytkownik zalogował się jako admin. Masz teraz dostęp do INSERT, UPDATE oraz DELETE TYM ZAPYTANIU I TYLKO W TYM."
+        else:
+            additionalInfo= "[SYSTEM INFO]: Użytkownik to ZWYKŁY GOŚĆ."
+            
         response = self.agentExecutor.invoke(
-            {"input": inputText}
+            {"input": additionalInfo + inputText}
             )
         
 
@@ -130,6 +163,8 @@ class DataBaseAgent:
             return str(response)
 
         return str(response)
+
+    
 
 
 #Odpowiedź z FastAPI: [{"type":"text","text":"Prezydentem Polski jest **Andrzej Duda**.","extras":{"signature":"EjQKMgEMOdbHPsO4j3synvW/fBl9jsvYVahWCk1Vw9y8FyOu9k5VYwixMTnhujLW2eZBV9dF"}}]
