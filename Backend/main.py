@@ -24,7 +24,11 @@ from helpers import extractFromPDF
 from configLoader import loadConfig
 
 
-sessionLifespan = 1800#sekund 30 min.
+backendConfig = loadConfig('config.txt')
+
+
+#sessionLifespan = 1800#sekund 30 min.
+sessionLifespan = int(backendConfig.get("SESSION_LIFESPAN_LIMIT", 1800))
 
 async def checkSessionLifespan():
     while True:
@@ -66,7 +70,7 @@ react.add_middleware(
 
 defaultModel ="gemi3_1_fl"
 
-backendConfig = loadConfig('config.txt')
+#backendConfig = loadConfig('config.txt')
 modelName = backendConfig.get("MAIN_MODEL", defaultModel)
 
 try:
@@ -96,7 +100,7 @@ acceptedFilesFromat = ['PDF']#na przyszłość do rozbudowy
 async def feedback(
     sessionID: str = Form(...),
     request: str = Form(...),#ID i prompt są teraz jak formularz
-    isAdmin:bool = Form(False),
+    #isAdmin:bool = Form(False),
     attachedFile: UploadFile = File(None)# jako opcjonalny plik
     ):
 #async def feedback(request: messageRequest):#asynchroniczna aby otrzymać pdf'a
@@ -109,9 +113,12 @@ async def feedback(
             sessionsDict[currentSession] ={#nie można dać do następnej linijki
                 'agent':CoordinatorAgent(model=model),
                 'born': now,#obecny czas
+                'isAdmin': False
             }
         else:
             sessionsDict[currentSession]['born'] = now
+
+        adminPrivilages = sessionsDict[currentSession].get('isAdmin', False)#domyślnie fałsz
 
         if attachedFile and attachedFile.filename.endswith('.pdf'):
             pdfContent = await attachedFile.read()#jest to funkcja asynchroniczna
@@ -124,7 +131,7 @@ async def feedback(
         async def executeAgent():
             try:
                 agent = sessionsDict[currentSession]['agent']
-                response =await agent.coordinatorResponse(request, queue, isAdmin)
+                response =await agent.coordinatorResponse(request, queue, adminPrivilages)
                 await queue.put(json.dumps(
                     {"type": "final", "data": response}
                     ))
@@ -180,13 +187,14 @@ async def checkUserIp(request: Request):
 
 class AdminLoginRequest(BaseModel):
     password: str
+    sessionID: str
 
 
 @react.post("/admin-login")
 async def checkAdminPassword(request: AdminLoginRequest):
     passwordsHash = backendConfig.get("ADMIN_PASSWORD")
     if not passwordsHash:
-        ValueError("brak hasła")
+        return {"status": "error", "message": "Brak hasła"}
 
 
     try:
@@ -194,11 +202,23 @@ async def checkAdminPassword(request: AdminLoginRequest):
             request.password.encode('utf-8'),
             passwordsHash.encode('utf-8')
             )
+        
         if isCorrect:
+            now = time.time()
+            if request.sessionID not in sessionsDict:
+                sessionsDict[request.sessionID]={
+                    'agent': CoordinatorAgent(model=model),
+                    'born': now,
+                    'isAdmin': True#dajemy admina
+                    }
+            else:
+                sessionsDict[request.sessionID]['isAdmin'] = True
+                sessionsDict[request.sessionID]['born'] = now
+                
             feedback = {
-            "status":"correct",
-            "message": "Zalogowano"
-            }
+                "status":"correct",
+                "message": "Zalogowano na admina"
+                }
             return feedback
         else:
             feedback = {
@@ -209,6 +229,27 @@ async def checkAdminPassword(request: AdminLoginRequest):
     except Exception as e:
         print(f"Błąd logowania: {e}")
         return {"status": "error", "message": "Błąd backedna"}
+
+
+
+class AdminLogoutRequest(BaseModel):
+    sessionID: str
+
+
+@react.post("/admin-logout")
+async def adminLogout(request: AdminLogoutRequest):
+    try:
+        if request.sessionID in sessionsDict:
+            sessionsDict[request.sessionID]['isAdmin']=False
+                
+            feedback = {
+                "status":"correct",
+                "message": "Wylogowano admina"
+                }
+            return feedback
+    except Exception as e:
+        print(f"Błąd lwylogowania: {e}")
+        return {"status": "error", "message": "Błąd backedna-wylogowanie"}
 
 
     

@@ -63,19 +63,29 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
             {
                 if (line.trim() != '')//wyci¹gamy wartoœci z pól
                 {
-                    const dataFromJson = JSON.parse(line);
+                    try
+                    {
+                        const dataFromJson = JSON.parse(line);
 
-                    if (dataFromJson.type === "status" && onStatusChange) {
-                        onStatusChange(dataFromJson.data)
+                        if (dataFromJson.type === "status" && onStatusChange) {
+                            onStatusChange(dataFromJson.data)
+                        }
+                        else if (dataFromJson.type === "final") {
+                            streamOutput = dataFromJson.data;
+                        }
+                        else if (dataFromJson.type === "error") {
+                            throw new Error(dataFromJson.data);
+                        }
                     }
-                    else if (dataFromJson.type === "final")
+                    catch (parseError)// normalny error jest pod koniec
                     {
-                        streamOutput = dataFromJson.data;
+                        if(!(parseError instanceof SyntaxError))
+                        {
+                            throw parseError; //jest to b³¹d backedu. Ignorujemy
+                        }
+                        console.warn("Uszkodzony fragment strumieniaLLM Zignorowany:", line);
                     }
-                    else if (dataFromJson.type === "error")
-                    {
-                        throw new Error(dataFromJson.data);
-                    }
+                    
                 }
             }
         }//while

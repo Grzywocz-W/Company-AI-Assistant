@@ -35,6 +35,8 @@ export default function ChatWindow() {
     const [adminPassword, setAdminPassword] = useState("");
     const [hasAdminAccess, setHasAdminAccess] = useState(false);
 
+    const messageEndingRef = useRef(null);
+
     const updateSessionTime = () =>
     {
         if (sessionTimer.current)
@@ -88,6 +90,17 @@ export default function ChatWindow() {
         
     },[]
     );
+
+    useEffect(() =>
+    {
+        if (messageEndingRef.current)
+        {
+            messageEndingRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    },
+        [messagesList, isResponding, responseStatus],)
+        ;
+    
 
     const handleSend = async () =>
     {
@@ -176,7 +189,10 @@ export default function ChatWindow() {
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password: adminPassword })
+                body: JSON.stringify({
+                    password: adminPassword,
+                    sessionID: sessionID
+                })
             });
 
             const loginData = await response.json()
@@ -205,22 +221,62 @@ export default function ChatWindow() {
         setIsAdminPanelVisible(false);
     };
 
+
+    const handleAdminLogout = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/admin-logout',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionID: sessionID
+                    })
+                });
+
+        }
+        catch (error) {
+            console.error("Błąd przy wylogowywaniu", error)
+        }
+
+
+        //czyścimy okienko
+        setHasAdminAccess(false);
+        setAdminPassword('');
+        setIsAdminPanelVisible(false);
+    };
+
     return (
         /*<div className="chatWindow">*/
         <div className={`chatWindow ${hasAdminAccess ? 'masterMode' : ''}`}>
             {/*panel admina*/ }
+
             {isAdminControl &&
                 (
                 <div className="adminHeader">
-                    <button
-                        className="adminLoginButton"
-                        onClick={() => setIsAdminPanelVisible(true)}
-                        title="Admin Login Panel"
-                    >
-                      ⚙️
-                    </button>
-                </div>
+                    {!hasAdminAccess ? (
+                        <button
+                            className="adminLoginButton"
+                            onClick={() => setIsAdminPanelVisible(true)}
+                            title="Admin Login Panel"
+                        >
+                            ⚙️
+                        </button>
+                
+                    ) : (
+                        <button
+                            className="adminLogoutButton"
+                            onClick={handleAdminLogout}
+                            title="Wyloguj z panelu Admina"
+                            style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}
+                        >
+                            🔓
+                        </button>
+                )
+                }
+                </div>   
             )}
+
+
             {/*okno logowania*/ }
             {isAdminPanelVisible &&
                 (
@@ -272,6 +328,7 @@ export default function ChatWindow() {
                         </div>
                     </div>
                 )}
+                <div ref={messageEndingRef} />
             </div>
 
             {/*Pasek z podglądem wybranego pliku nad polem wpisywania */}

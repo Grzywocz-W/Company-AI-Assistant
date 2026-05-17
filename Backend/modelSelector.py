@@ -6,7 +6,9 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 #from langchain_openai import ChatOpenAI
 from langchain_community.chat_models import ChatOllama
 
+from configLoader import loadConfig
 
+backendConfig = loadConfig('config.txt')
 def createLLM(model_enum: modelsList,temperature = 0.0):
     fullModeName = model_enum.value
     aiCompany, modelName = fullModeName.split("/")
@@ -28,7 +30,7 @@ def createLLM(model_enum: modelsList,temperature = 0.0):
     elif aiCompany == "ollama":
         OlamaLLM = ChatOllama(
             model=modelName,
-            base_url="http://localhost:11434",
+            base_url=backendConfig.get("OLLAMA_URL"),
             temperature=temperature,
             )
         return OlamaLLM

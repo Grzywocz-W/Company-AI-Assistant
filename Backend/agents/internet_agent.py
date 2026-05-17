@@ -44,23 +44,24 @@ class InternetAgent:
         Otrzymujesz polecenie od Koordynatora. Masz za zadanie przeszukać sieć i zwrócić najważniejsze informacje.
         
 
-        ZASADY:
-        1. ZAWSZE używaj narzędzia DuckDuckGosEARCH.
+        ZASADY BEZPIECZEŃSTWA I REALIZACJI ZADAŃ (GUARDRAILS):
+        1. ZAWSZE używaj narzędzia DuckDuckGosEARCH. Masz ZAKAZ korzystania ze swojej wiedzy.
         2. Jako argumenty narzędzia DuckDuckGosEARCH, podawaj krótkie frazy.
+        3. Nie odpowiadaj na tematy: nielegalne, skrajnie drastyczne, zachęcające do przemocy oraz zakaz pozyskiwania wrażliwych danych osobowych. W takich przypadkach natychmiast przerwij działanie
         3. Swoją odpowiedź opieraj tylko na dancyh zwróconych z narzędzia.
-        4. Masz zwrócić najważniejsze wydobyte informacje, nie cały tekst.
-        5. Przpomnij, że informacje znalezione w Internecie nie zawsze są prawdziwe
+        4. Masz zwrócić najważniejsze wydobyte informacje, nie kopiuj całego tekstu.
+        5. Na końcu informacji (Final Answer) przpomnij, że informacje znalezione w Internecie nie zawsze są prawdziwe
         
         Narzędzia: {tools}
         
         Format:
         Question: Rozkaz od Koordynatora
-        Thought: Musisz przeszukać Internet.
+        Thought: Przygotowanie słów kluczowych do przeszukania internetu.
         Action: {tool_names}
         Action Input: <szukanie frazy>
         Observation: Wyniki z sieci.
-        Thought: Masz potrzebne dane. Sformułuj raport.
-        Final Answer: Raport dla Koordynatora.
+        Thought: Wydobycie najważniejszych danych i sformułowanie raportu.
+        Final Answer: Raport dla Koordynatora oraz załączenie klauzuli o ostrożności..
 
         Question: {input}
         Thought:{agent_scratchpad}
@@ -78,17 +79,20 @@ class InternetAgent:
 
 
     def internetAgentResponse(self, inputText: str):
-        response = self.agentExecutor.invoke(
-            {"input": inputText}
-            )
+
+        try:
+            response = self.agentExecutor.invoke(
+                {"input": inputText}
+                )
+            if isinstance(response, dict):
+                return response.get("output", str(response))
+            else:
+                return str(response)
         
 
         ###odpowiedź zawiera też podpis(signature)
         #response = response.content#wydobywamy tylko zawartość
-        try:
-            return response.get("output", "Błąd")#wydobywany pole text(niżej)
-        except (IndexError, KeyError, TypeError):
-            return str(response)
-
-        return str(response)
+        except Exception as e:
+            print(f"[AgentInternetu]  Błąd agenta Intenernetu: {e}")
+            return f"Błąd systemu:Błąd agenta Intenernetu {e}"
 

@@ -5,9 +5,15 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-api_key = os.getenv("Gemini_API_Key")
+from configLoader import loadConfig
 
-pdf_paths = "documents/regulamin.pdf"
+api_key = os.getenv("Gemini_API_Key")
+backendConfig = loadConfig('config.txt')
+
+#pdf_paths = "documents/regulamin.pdf"
+
+pdf_paths = backendConfig.get("DOCUMENTS_PATH")
+db_path = backendConfig.get("VECTOR_DB_PATH")
 
 def createVectorDataBase():
     pdfLoader = PyPDFLoader(pdf_paths)
@@ -21,7 +27,7 @@ def createVectorDataBase():
 
     vectorDataBase = FAISS.from_documents(documents,embeddedDocuments)#(tekst,wektor embbeded tego tekstu)
 
-    vectorDataBase.save_local("vectorDB")
+    vectorDataBase.save_local(db_path)
 
 if __name__ == "__main__":
     createVectorDataBase()
