@@ -13,6 +13,7 @@ from langchain_community.tools import DuckDuckGoSearchRun
 ###
 from models import modelsList
 from modelSelector import createLLM
+from agents.prompts.prompts import NET_SEARCH_PROMPT
 #
 api_key = os.getenv("Gemini_API_Key")
 
@@ -20,7 +21,7 @@ api_key = os.getenv("Gemini_API_Key")
 
 class InternetAgent:
     def __init__(self, model: modelsList):
-        self.agent = createLLM(model, temperature=0.3)
+        self.model = createLLM(model, temperature=0.3)
 ##        self.agent = ChatGoogleGenerativeAI(
 ##            model=model.value,#jest to enum, a nie tablica
 ##            google_api_key=api_key,
@@ -31,47 +32,18 @@ class InternetAgent:
         
         
         self.tools =[
-            Tool(name = "DuckDuckGosEARCH",
+            Tool(name = "DuckDuckGoSearch",
                  func= self.searchInternet.run,
                  description = "Używaj do przeszukania internetu"
                  ),
             ]
         
 
-        
-        systemPrompt = """
-        Jesteś agentem ds. wyszukiwania informacji w Internecie.
-        Otrzymujesz polecenie od Koordynatora. Masz za zadanie przeszukać sieć i zwrócić najważniejsze informacje.
-        
-
-        ZASADY BEZPIECZEŃSTWA I REALIZACJI ZADAŃ (GUARDRAILS):
-        1. ZAWSZE używaj narzędzia DuckDuckGosEARCH. Masz ZAKAZ korzystania ze swojej wiedzy.
-        2. Jako argumenty narzędzia DuckDuckGosEARCH, podawaj krótkie frazy.
-        3. Nie odpowiadaj na tematy: nielegalne, skrajnie drastyczne, zachęcające do przemocy oraz zakaz pozyskiwania wrażliwych danych osobowych. W takich przypadkach natychmiast przerwij działanie
-        3. Swoją odpowiedź opieraj tylko na dancyh zwróconych z narzędzia.
-        4. Masz zwrócić najważniejsze wydobyte informacje, nie kopiuj całego tekstu.
-        5. Na końcu informacji (Final Answer) przpomnij, że informacje znalezione w Internecie nie zawsze są prawdziwe
-        
-        Narzędzia: {tools}
-        
-        Format:
-        Question: Rozkaz od Koordynatora
-        Thought: Przygotowanie słów kluczowych do przeszukania internetu.
-        Action: {tool_names}
-        Action Input: <szukanie frazy>
-        Observation: Wyniki z sieci.
-        Thought: Wydobycie najważniejszych danych i sformułowanie raportu.
-        Final Answer: Raport dla Koordynatora oraz załączenie klauzuli o ostrożności..
-
-        Question: {input}
-        Thought:{agent_scratchpad}
-        """
-
-        prompt = PromptTemplate.from_template(systemPrompt)
-        agentTMP = create_react_agent(self.agent, self.tools, prompt)
+        prompt = PromptTemplate.from_template(NET_SEARCH_PROMPT)
+        reactAgent = create_react_agent(self.agent, self.tools, prompt)
 
         self.agentExecutor = AgentExecutor(
-            agent = agentTMP,
+            agent = reactAgent,
             tools = self.tools,
             verbose=True,#wypisuje w konsoli jak myśli
             handle_parsing_errors=True,

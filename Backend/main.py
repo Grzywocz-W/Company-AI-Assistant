@@ -22,26 +22,11 @@ from agents.coordinator import CoordinatorAgent
 from models import modelsList
 from helpers import extractFromPDF
 from configLoader import loadConfig
+from mainPY_funcs.sessionOrganizer import sessionsDict, checkSessionLifespan
 
 
 backendConfig = loadConfig('config.txt')
 
-
-#sessionLifespan = 1800#sekund 30 min.
-sessionLifespan = int(backendConfig.get("SESSION_LIFESPAN_LIMIT", 1800))
-
-async def checkSessionLifespan():
-    while True:
-        await asyncio.sleep(300)#co 5 minut
-        now = time.time()#obecny czas
-
-        sessionsToDelete = []
-        for sesID, data in sessionsDict.items():
-            if now - data['born'] > sessionLifespan:
-                sessionsToDelete.append(sesID)
-
-        for sesID in sessionsToDelete:
-            sessionsDict.pop(sesID)
 
 @asynccontextmanager #bez tego nie działa
 async def sessionGarbageCollector(app: FastAPI):
@@ -82,8 +67,7 @@ except Exception as e:
 #model = modelsList.gemi3_1_fl
 #coordAgent = CoordinatorAgent(model=model)
 
-#jeden użytkwonik = jedna sesja
-sessionsDict= {}#'Michal', <obiekt>
+
 #!!!!!DODAĆ ZWALNANIE PAMIĘCI!!!!!!!
 
 
