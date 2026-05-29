@@ -1,4 +1,4 @@
-#internet_agent.py.py
+#internet_agent.py
 #ddgs i duckduckgo
 import os
 ###AI
@@ -40,7 +40,7 @@ class InternetAgent:
         
 
         prompt = PromptTemplate.from_template(NET_SEARCH_PROMPT)
-        reactAgent = create_react_agent(self.agent, self.tools, prompt)
+        reactAgent = create_react_agent(self.model, self.tools, prompt)
 
         self.agentExecutor = AgentExecutor(
             agent = reactAgent,
@@ -65,6 +65,6 @@ class InternetAgent:
         ###odpowiedź zawiera też podpis(signature)
         #response = response.content#wydobywamy tylko zawartość
         except Exception as e:
-            print(f"[AgentInternetu]  Błąd agenta Intenernetu: {e}")
-            return f"Błąd systemu:Błąd agenta Intenernetu {e}"
+            print(f"[AgentInternetu]  Błąd agenta internetowego: {e}")
+            return f"Błąd systemu: Błąd agenta Intenernetu {e}"
 

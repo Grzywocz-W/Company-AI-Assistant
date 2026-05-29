@@ -49,7 +49,7 @@ export default function ChatWindow() {
             const expiredMessage =
             {
                 role: 'ai',
-                text: 'Sesja wygasłą ze względu bezpieczeństwa. Spróbuj ponownie',
+                text: 'Sesja wygasła ze względów bezpieczeństwa. Spróbuj ponownie',
             };
             setMessagesList((prev) => [...prev, expiredMessage]);
 
@@ -58,7 +58,7 @@ export default function ChatWindow() {
 
     useEffect(() =>
     {
-        const randSessID = "ses_" + crypto.randomUUID();;//potem dodać numerowanie sesji
+        const randSessID = "ses_" + crypto.randomUUID();//potem dodać numerowanie sesji
         setSessionID(randSessID);// podkreśla bo nie generuje losowe treści i taki jest problem
 
         //najpierw sprawdzamy ip admina, potem timer
@@ -140,7 +140,7 @@ export default function ChatWindow() {
 
         try
         {
-            //wosobnym pliku
+            //w osobnym pliku
             const result = await sendTextToFastAPI(
                 messageContent,
                 sessionID,
@@ -212,7 +212,7 @@ export default function ChatWindow() {
         }
         catch(error)
         {
-            console.error("Błąd przy logowania", error)
+            console.error("Błąd przy logowaniu", error)
         }
 
 
@@ -360,12 +360,12 @@ export default function ChatWindow() {
 
 
             <div className="chatInputBar">
-                {/* Okno z ekploatorem plikow*/}
+                {/* Okno z eksploratorem plikow*/}
                 <input
                     type="file"
                     accept=".pdf"
                     ref={attachedFileRef}
-                    className="fileExplolerWindow"
+                    className="fileExplorerWindow"
                     onChange={(e) => setAttachedFile(e.target.files[0])}
                 />
 

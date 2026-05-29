@@ -77,7 +77,7 @@ except Exception as e:
 #    text: str
 
 
-acceptedFilesFromat = ['PDF']#na przyszłość do rozbudowy
+acceptedFilesFormat = ['PDF']#na przyszłość do rozbudowy
 
 
 @react.post("/chat")
@@ -102,7 +102,7 @@ async def feedback(
         else:
             sessionsDict[currentSession]['born'] = now
 
-        adminPrivilages = sessionsDict[currentSession].get('isAdmin', False)#domyślnie fałsz
+        adminPrivileges = sessionsDict[currentSession].get('isAdmin', False)#domyślnie fałsz
 
         if attachedFile and attachedFile.filename.endswith('.pdf'):
             pdfContent = await attachedFile.read()#jest to funkcja asynchroniczna
@@ -115,7 +115,7 @@ async def feedback(
         async def executeAgent():
             try:
                 agent = sessionsDict[currentSession]['agent']
-                response =await agent.coordinatorResponse(request, queue, adminPrivilages)
+                response =await agent.coordinatorResponse(request, queue, adminPrivileges)
                 await queue.put(json.dumps(
                     {"type": "final", "data": response}
                     ))
@@ -126,7 +126,7 @@ async def feedback(
                 await queue.put(None)
                 
         async def responseStream():
-            reciver =asyncio.create_task(executeAgent())
+            receiver =asyncio.create_task(executeAgent())
             try:
                 while True:
                     messageTMP = await queue.get()
@@ -135,7 +135,7 @@ async def feedback(
                     
                     yield f"{messageTMP}\n"
             finally:
-                await reciver
+                await receiver
         return StreamingResponse(responseStream(), media_type="application/x-ndjson")
         #response = sessionsDict[currentSession]['agent'].coordinatorResponse(request.text)
         #response = sessionsDict[currentSession]['agent'].coordinatorResponse(request)
@@ -176,15 +176,15 @@ class AdminLoginRequest(BaseModel):
 
 @react.post("/admin-login")
 async def checkAdminPassword(request: AdminLoginRequest):
-    passwordsHash = backendConfig.get("ADMIN_PASSWORD")
-    if not passwordsHash:
+    passwordHash = backendConfig.get("ADMIN_PASSWORD")
+    if not passwordHash:
         return {"status": "error", "message": "Brak hasła"}
 
 
     try:
         isCorrect = bcrypt.checkpw(
             request.password.encode('utf-8'),
-            passwordsHash.encode('utf-8')
+            passwordHash.encode('utf-8')
             )
         
         if isCorrect:
@@ -212,7 +212,7 @@ async def checkAdminPassword(request: AdminLoginRequest):
             return feedback
     except Exception as e:
         print(f"Błąd logowania: {e}")
-        return {"status": "error", "message": "Błąd backedna"}
+        return {"status": "error", "message": "Błąd backendu"}
 
 
 
@@ -232,8 +232,8 @@ async def adminLogout(request: AdminLogoutRequest):
                 }
             return feedback
     except Exception as e:
-        print(f"Błąd lwylogowania: {e}")
-        return {"status": "error", "message": "Błąd backedna-wylogowanie"}
+        print(f"Błąd wylogowania: {e}")
+        return {"status": "error", "message": "Błąd backendu-wylogowanie"}
 
 
     

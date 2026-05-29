@@ -9,9 +9,9 @@ from langchain_community.chat_models import ChatOllama
 from configLoader import loadConfig
 
 backendConfig = loadConfig('config.txt')
-def createLLM(model_enum: modelsList,temperature = 0.0):
-    fullModeName = model_enum.value
-    aiCompany, modelName = fullModeName.split("/")
+def createLLM(model_enum: modelsList, temperature = 0.0):
+    fullModelName = model_enum.value
+    aiCompany, modelName = fullModelName.split("/")
 
     if aiCompany == "google":
         googleLLM = ChatGoogleGenerativeAI(
@@ -28,11 +28,11 @@ def createLLM(model_enum: modelsList,temperature = 0.0):
 ##            )
 ##        return openAiLLM
     elif aiCompany == "ollama":
-        OlamaLLM = ChatOllama(
+        OllamaLLM = ChatOllama(
             model=modelName,
             base_url=backendConfig.get("OLLAMA_URL"),
             temperature=temperature,
             )
-        return OlamaLLM
+        return OllamaLLM
     else:
-        raise ValueError(f"Brak takiego modelu")
+        raise ValueError(f"Brak takiego modelu dostawcy {aiCompany}")

@@ -33,7 +33,7 @@ COORDINATOR_PROMPT= """Jesteś Koordynatorem systemu AI, która ma odpowiadać n
 ADMIN_EXTENSION_PROMPT = """
             [SYSTEM OVERRIDE]: Użytkownik zalogował się jako admin. Masz teraz dostęp do większej ilości uprawnień. Przekaż to info innym agentom.
         """
-QUEST_EXTENSION_PROMPT="""
+GUEST_EXTENSION_PROMPT="""
             [SYSTEM INFO]: Użytkownik to ZWYKŁY GOŚĆ.
         """
 RAG_PROMPT = """

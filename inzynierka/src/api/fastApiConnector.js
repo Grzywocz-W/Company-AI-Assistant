@@ -38,7 +38,7 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
         }
 
         const toolCallingStreamReader = response.body.getReader();//odczyt kawa³ek po kawa³ku
-        const textDeconder = new TextDecoder();//dane to surowe bajty
+        const textDecoder = new TextDecoder();//dane to surowe bajty
 
         let streamBuffer = '';
         let streamOutput = '';
@@ -53,11 +53,11 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
             }
 
 
-            streamBuffer = streamBuffer + textDeconder.decode(value, { stream: true });
+            streamBuffer = streamBuffer + textDecoder.decode(value, { stream: true });
 
             const lines = streamBuffer.split('\n');
 
-            streamBuffer = lines.pop();//ostatnielinijka mo¿e nie byæ pe³na
+            streamBuffer = lines.pop();//ostatnia linijka mo¿e nie byæ pe³na
 
             for (const line of lines)// of nie in
             {
@@ -81,9 +81,9 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
                     {
                         if(!(parseError instanceof SyntaxError))
                         {
-                            throw parseError; //jest to b³¹d backedu. Ignorujemy
+                            throw parseError; //jest to b³¹d backendu. Ignorujemy
                         }
-                        console.warn("Uszkodzony fragment strumieniaLLM Zignorowany:", line);
+                        console.warn("Uszkodzony fragment strumienia LLM zignorowany:", line);
                     }
                     
                 }

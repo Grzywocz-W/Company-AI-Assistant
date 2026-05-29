@@ -13,12 +13,12 @@ from langchain_core.tools import Tool
 ####
 from models import modelsList
 from modelSelector import createLLM
-from agents.database_agent import DataBaseAgent
+from agents.database_agent import DatabaseAgent
 from agents.RAG_agent import RagAgent
 from agents.internet_agent import InternetAgent
 from reportAgentStatus import AgentStatusAsyncCallbackHandler
 from configLoader import loadConfig
-from agents.prompts.prompts import COORDINATOR_PROMPT, ADMIN_EXTENSION_PROMPT, QUEST_EXTENSION_PROMPT
+from agents.prompts.prompts import COORDINATOR_PROMPT, ADMIN_EXTENSION_PROMPT, GUEST_EXTENSION_PROMPT
 
 api_key = os.getenv("Gemini_API_Key")
 backendConfig = loadConfig('config.txt')
@@ -37,7 +37,7 @@ class CoordinatorAgent:
 
         #self.chatHistory = []
         #========================AGENCI========================#
-        self.dataBaseAgent = DataBaseAgent(model)
+        self.databaseAgent = DatabaseAgent(model)
         self.ragAgent = RagAgent(model, docsPath)
         self.internetAgent = InternetAgent(model)
         #========================AGENCI========================#
@@ -53,12 +53,12 @@ class CoordinatorAgent:
                  ),
             Tool(name = "AgentPrzeszukaniaInternetu",
                  func= self.internetAgent.internetAgentResponse,
-                 description = "Używaj do przeszukania sieci. Nie podawaj ŻADNYCH wrażliwych dancyh"
+                 description = "Używaj do przeszukania sieci. Nie podawaj ŻADNYCH wrażliwych danych"
                  ),
             ]
         #dodać później wyszukiwarkę
         prompt = PromptTemplate.from_template(COORDINATOR_PROMPT)
-        reactAgent = create_react_agent(self.agent, self.tools, prompt)
+        reactAgent = create_react_agent(self.model, self.tools, prompt)
 
         self.agentExecutor = AgentExecutor(
             agent = reactAgent,
@@ -83,12 +83,12 @@ class CoordinatorAgent:
         #response = self.agent.invoke(self.chatHistory)
         #self.chatHistory.append(response)###trzeba dodać!!!!
 
-        self.dataBaseAgent.isAdmin = isAdmin
+        self.databaseAgent.isAdmin = isAdmin
 
         if isAdmin:
             promptExtension = ADMIN_EXTENSION_PROMPT
         else:
-            promptExtension=QUEST_EXTENSION_PROMPT
+            promptExtension=GUEST_EXTENSION_PROMPT
         finalInputText = promptExtension + "\n" + inputText
             
         callingListener = AgentStatusAsyncCallbackHandler(queue)
@@ -107,7 +107,7 @@ class CoordinatorAgent:
                 return str(response)
         
         except Exception as e:
-            print(f"[Coordinator]  Błąd koordynatora: {e}")
+            print(f"[Coordinator] Błąd koordynatora: {e}")
             return f"Błąd systemu: Koordynator ma problem {e}"
 
 
