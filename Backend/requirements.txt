@@ -1,0 +1,27 @@
+# PyTorch with CUDA 12.6 support
+--index-url https://download.pytorch.org/whl/cu126
+torch==2.11.0
+torchvision==0.26.0
+torchaudio==2.11.0
+
+# Backend Framework & Server
+fastapi
+uvicorn[standard]
+pydantic>=2.0
+python-multipart
+bcrypt
+
+# AI & Multi-Agent Framework (LangChain)
+langchain
+langchain-core
+langchain-community
+langchain-ollama          # Needed for local integration
+
+# Vector Database for RAG
+faiss-cpu                 # Use faiss-gpu if preferred, but faiss-cpu is highly stable
+
+# Database Integration (MySQL)
+sqlalchemy
+pymysql
+mysql-connector-python
+Faker

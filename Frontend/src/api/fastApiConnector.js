@@ -2,9 +2,9 @@
 
 export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, isAdmin = false, onStatusChange = null) =>
 {
-    const requestDataForm = new FormData();//aby dodaæ pdf'a trzeba stworzyæ forma
+    const requestDataForm = new FormData();//aby dodaï¿½ pdf'a trzeba stworzyï¿½ forma
 
-    //nazwy pól musz¹ siê zgadzaæ z tym co jest w main.py
+    //nazwy pï¿½l muszï¿½ siï¿½ zgadzaï¿½ z tym co jest w main.py
     requestDataForm.append('sessionID', sessionID);
     requestDataForm.append('request', text);
 
@@ -20,7 +20,7 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
     try {
         const response = await fetch('http://127.0.0.1:8000/chat', {
             method: 'POST',
-            //przegl¹darka powinna sobie poradziæ bez tego
+            //przeglï¿½darka powinna sobie poradziï¿½ bez tego
             //headers: {
             //    'Content-Type': 'application/json',
             //},
@@ -34,18 +34,18 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
         });
 
         if (!response.ok) {
-            throw new Error('B³¹d sieci z FastAPI');
+            throw new Error('BÅ‚Ä…d sieci z FastAPI');
         }
 
-        const toolCallingStreamReader = response.body.getReader();//odczyt kawa³ek po kawa³ku
+        const toolCallingStreamReader = response.body.getReader();//odczyt kawaï¿½ek po kawaï¿½ku
         const textDecoder = new TextDecoder();//dane to surowe bajty
 
         let streamBuffer = '';
         let streamOutput = '';
 
-        while (true)//dzia³a tak d³ugo, a¿ stream siê nie zakoñczy
-        {           //nazwy te s¹ zdefiniowane przez reacta
-            const { done, value } = await toolCallingStreamReader.read();//czeka na wywo³anie narzêdzia
+        while (true)//dziaï¿½a tak dï¿½ugo, aï¿½ stream siï¿½ nie zakoï¿½czy
+        {           //nazwy te sï¿½ zdefiniowane przez reacta
+            const { done, value } = await toolCallingStreamReader.read();//czeka na wywoï¿½anie narzï¿½dzia
 
             if (done)
             {
@@ -57,11 +57,11 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
 
             const lines = streamBuffer.split('\n');
 
-            streamBuffer = lines.pop();//ostatnia linijka mo¿e nie byæ pe³na
+            streamBuffer = lines.pop();//ostatnia linijka moï¿½e nie byï¿½ peï¿½na
 
             for (const line of lines)// of nie in
             {
-                if (line.trim() != '')//wyci¹gamy wartoœci z pól
+                if (line.trim() != '')//wyciï¿½gamy wartoï¿½ci z pï¿½l
                 {
                     try
                     {
@@ -81,7 +81,7 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
                     {
                         if(!(parseError instanceof SyntaxError))
                         {
-                            throw parseError; //jest to b³¹d backendu. Ignorujemy
+                            throw parseError; //jest to bï¿½ï¿½d backendu. Ignorujemy
                         }
                         console.warn("Uszkodzony fragment strumienia LLM zignorowany:", line);
                     }
@@ -90,7 +90,7 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
             }
         }//while
 
-        if (typeof streamOutput === "object" && streamOutput !== null)//LangChain lubi zwracaæ obiekt, a nie stringa
+        if (typeof streamOutput === "object" && streamOutput !== null)//LangChain lubi zwracaï¿½ obiekt, a nie stringa
         {
             return streamOutput.text || JSON.stringify(streamOutput)
         }
@@ -99,7 +99,7 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
 
         //const data = await response.json();
         ////return data.result;
-        //if (typeof data.result === "object" && data.result !== null)// przez LangChaina Python zwraca signature odpowiedzi, wiêc doda³em zabezpiecznie. Uwa¿aj Wojtek.
+        //if (typeof data.result === "object" && data.result !== null)// przez LangChaina Python zwraca signature odpowiedzi, wiï¿½c dodaï¿½em zabezpiecznie. Uwaï¿½aj Wojtek.
         //{
         //    return data.result.text || JSON.stringify(data.result)
         //}
@@ -109,7 +109,7 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
     }
     catch (error)
     {
-        console.error("Wyst¹pi³ b³¹d podczas wysy³ania:", error);
-        throw error; // Rzucamy b³¹d dalej, aby obs³u¿yæ go w komponencie
+        console.error("WystÄ…piÅ‚ bÅ‚Ä…d podczas wysyÅ›wietlania:", error);
+        throw error; // Rzucamy bï¿½ï¿½d dalej, aby obsï¿½uï¿½yï¿½ go w komponencie
     }
 };
