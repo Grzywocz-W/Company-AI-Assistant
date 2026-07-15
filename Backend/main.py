@@ -42,6 +42,7 @@ origins =[
     ########################
     "http://localhost:54557",
     "http://127.0.0.1:54557",
+    "http://192.168.1.15:54557",
 ]
 
 react.add_middleware(
@@ -109,6 +110,9 @@ async def feedback(
             textFromPdf = extractFromPDF(pdfContent)
             
             request = f"Zawartość pliku PDF załączona przez użytkownika: \n {textFromPdf}  \n Pytanie użytkownika: \n" + request
+
+        if adminPrivileges:
+            request = "[SYSTEM OVERRIDE]: Użytkownik zalogował się jako admin. Może edytować bazę danych.\n" + request
             
         queue = asyncio.Queue()
 
@@ -156,7 +160,7 @@ async def feedback(
 async def checkUserIp(request: Request):
     userIp = request.headers.get("X-Forwarded-For", request.client.host).split(",")[0].strip()
     
-    configAdminIps = backendConfig.get("ALLOWED_ADMIN_IP", "127.0.0.1")
+    configAdminIps = backendConfig.get("ALLOWED_ADMIN_IP")
     adminIps = configAdminIps.split(",")
     
     adminIpList = []
