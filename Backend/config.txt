@@ -1,1 +1,15 @@
 MAIN_MODEL=gemi3_1_fl
+VECTOR_DB_PATH=vectorDB
+
+# Wspólna nazwa bazy danych (zdefiniowana w naszym schema.sql)
+DB_NAME=e_commerce_db
+
+# Konfiguracja dla zwykłego klienta (tylko odczyt danych)
+DB_HOST_CUSTOMER=127.0.0.1
+DB_USER_CUSTOMER=db_user
+DB_PASSWORD_CUSTOMER=db_password
+
+# Konfiguracja dla administratora (dostęp do modyfikacji)
+DB_HOST_ROOT=127.0.0.1
+DB_USER_ROOT=root
+DB_PASSWORD_ROOT=root_password

@@ -18,7 +18,7 @@ from pydantic import BaseModel
 from fastapi.responses import StreamingResponse
 import json
 ###AI
-from agents.coordinator import CoordinatorAgent
+#from agents.coordinator import CoordinatorAgent
 from models import modelsList
 from helpers import extractFromPDF
 from configLoader import loadConfig
@@ -240,5 +240,6 @@ async def adminLogout(request: AdminLogoutRequest):
         return {"status": "error", "message": "Błąd backendu-wylogowanie"}
 
 
-    
+if __name__ == "__main__":
+    uvicorn.run("main:react", host="127.0.0.1", port=8000, reload=True)
 
