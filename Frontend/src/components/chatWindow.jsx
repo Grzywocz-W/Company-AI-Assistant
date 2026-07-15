@@ -12,6 +12,7 @@ import {
 } from '../api/fastApiConnector';
 import './ChatWindow.css';
 import { AgentCallingStatusEnum } from '../constants/agentCallingStatus';
+import { BASE_URL } from '../constants/config'//teraz jest w config.
 
 export default function ChatWindow() {
     const [userInput, setUserInput] = useState('');
@@ -64,7 +65,7 @@ export default function ChatWindow() {
         //najpierw sprawdzamy ip admina, potem timer
         const adminIpVerification = async () => {
             try {
-                const ipResponse = await fetch('http://127.0.0.1:8000/check-ip');
+                const ipResponse = await fetch(`${BASE_URL}/check-ip`);
                 const isAdminPrivAllowed = await ipResponse.json();
 
                 if (isAdminPrivAllowed['is-admin-control-allowed'] === true) {
@@ -185,7 +186,7 @@ export default function ChatWindow() {
 
         try
         {
-            const response = await fetch('http://127.0.0.1:8000/admin-login',
+            const response = await fetch(`${BASE_URL}/admin-login`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -224,7 +225,7 @@ export default function ChatWindow() {
 
     const handleAdminLogout = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/admin-logout',
+            const response = await fetch(`${BASE_URL}/admin-logout`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
