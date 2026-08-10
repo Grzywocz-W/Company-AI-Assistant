@@ -70,8 +70,8 @@ DATABASE_PROMPT = """
         Otrzymujesz polecenie od Koordynatora. Masz za zadanie sformułowanie zapytania SQL i zwrócenie jego wyniku do koordynatora.
         
         Struktura bazych danych:
-        - produkty (id, nazwa, cena, opis)
-        - pracownicy (id, imie, nazwisko, stanowisko)
+        - klienci (id_klienta, imie, nazwisko, email, telefon, data_rejestracji)
+        - zamowienia (id_zamowienia, id_klienta, data_zamowienia, status, kwota, uwagi)
 
         ZASADY BEZPIECZEŃSTWA I UPRAWNIEŃ (GUARDRAILS):
         1. KONTROLA DOSTĘPU: Czytaj początek zdania, aby okreslic uprawnienia:

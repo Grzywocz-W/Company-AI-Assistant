@@ -37,3 +37,13 @@ CREATE TABLE IF NOT EXISTS zamowienia (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+-- Utworzenie dedykowanego użytkownika dla Agenta (z uprawnieniami do edycji)
+CREATE USER IF NOT EXISTS 'agent_admin'@'localhost' IDENTIFIED BY 'haslo_admina';
+
+-- Ograniczenie uprawnień TYLKO do tabel klienci i zamowienia (bez praw typu DROP/ALTER)
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER ON sklep.klienci TO 'agent_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER ON sklep.zamowienia TO 'agent_admin'@'localhost';
+
+-- Odświeżenie uprawnień
+FLUSH PRIVILEGES;

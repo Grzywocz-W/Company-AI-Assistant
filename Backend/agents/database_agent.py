@@ -73,9 +73,9 @@ class DatabaseAgent:
                 loginPassword=backendConfig.get("DB_PASSWORD_CUSTOMER")
                 loginDatabase=backendConfig.get("DB_NAME")
             else:# dostęp admina. Potem się zmieni hasło
-                loginHost=backendConfig.get("DB_HOST_ROOT")
-                loginUser=backendConfig.get("DB_USER_ROOT")
-                loginPassword=backendConfig.get("DB_PASSWORD_ROOT")
+                loginHost=backendConfig.get("DB_HOST_ADMIN")
+                loginUser=backendConfig.get("DB_USER_ADMIN")
+                loginPassword=backendConfig.get("DB_PASSWORD_ADMIN")
                 loginDatabase=backendConfig.get("DB_NAME")
                 
             conn = mysql.connector.connect(

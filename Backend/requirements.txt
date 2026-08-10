@@ -4,6 +4,12 @@ torch==2.11.0
 torchvision==0.26.0
 torchaudio==2.11.0
 
+#Neural Network components
+pandas
+numpy
+scikit-learn
+matplotlib
+
 # Backend Framework & Server
 fastapi
 uvicorn[standard]

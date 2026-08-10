@@ -8,8 +8,9 @@ DB_NAME=e_commerce_db
 DB_HOST_CUSTOMER=127.0.0.1
 DB_USER_CUSTOMER=db_user
 DB_PASSWORD_CUSTOMER=db_password
+DB_NAME=sklep
 
 # Konfiguracja dla administratora (dostęp do modyfikacji)
-DB_HOST_ROOT=127.0.0.1
-DB_USER_ROOT=root
-DB_PASSWORD_ROOT=root_password
+DB_HOST_ADMIN=127.0.0.1
+DB_USER_ADMIN=agent_admin
+DB_PASSWORD_ADMIN=haslo_admina
