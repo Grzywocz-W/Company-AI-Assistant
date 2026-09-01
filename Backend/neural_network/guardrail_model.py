@@ -10,7 +10,7 @@ class GuardrailNN(nn.Module):
         self.layer1 = nn.Linear(input_dim, 64)
         self.bn1 = nn.BatchNorm1d(64)
         self.relu1 = nn.ReLU()
-        self.dropout1 = nn.Dropout(0.3)  # Wyłącza 20% neuronów podczas treningu (zapobiega przeuczeniu)
+        self.dropout1 = nn.Dropout(0.3)  # Wyłącza 30% neuronów podczas treningu (zapobiega przeuczeniu)
 
         # Druga warstwa ukryta
         self.layer2 = nn.Linear(64, 32)
