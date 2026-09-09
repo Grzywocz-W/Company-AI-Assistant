@@ -8,3 +8,5 @@ class modelsList(Enum):
     gpt4o_mini = "openai/gpt-4o-mini"
 
     ollama_llama3 = "ollama/llama3"
+
+    ollama_qwen25 = "ollama/qwen2.5"

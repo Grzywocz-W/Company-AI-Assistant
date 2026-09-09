@@ -1,5 +1,9 @@
 MAIN_MODEL=gemi3_1_fl
 VECTOR_DB_PATH=vectorDB
+OLLAMA_UR=http://localhost:11434
+
+DOCUMENTS_PATH=
+VECTOR_DB_PATH=
 
 # Wspólna nazwa bazy danych (zdefiniowana w naszym schema.sql)
 DB_NAME=e_commerce_db

@@ -5,7 +5,7 @@ CREATE DATABASE IF NOT EXISTS e_commerce_db
 USE e_commerce_db;
 
 -- 1. Tabela Klienci
-CREATE TABLE IF NOT EXISTS klienci (
+CREATE TABLE IF NOT EXISTS KLIENCI (
     id_klienta INT AUTO_INCREMENT PRIMARY KEY,
     imie VARCHAR(50) NOT NULL,
     nazwisko VARCHAR(50) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS klienci (
 ) ENGINE=InnoDB;
 
 -- 2. Tabela Produkty
-CREATE TABLE IF NOT EXISTS produkty (
+CREATE TABLE IF NOT EXISTS PRODUKTY (
     id_produktu INT AUTO_INCREMENT PRIMARY KEY,
     nazwa_produktu VARCHAR(150) NOT NULL,
     kategoria_produktu VARCHAR(50) NOT NULL
