@@ -3,7 +3,8 @@
 export const AgentCallingStatusEnum =
 {
     THINKING: "Myślę",
-    DATABASE: "Sprawdzam w bazie",
+    DATABASE: "Sprawdzam w bazie danych",
     RAG: "Przeszukuję dokumenty",
-    INTERNET: "Szukam w Internecie"
+    INTERNET: "Szukam w Internecie",
+    SECURITY:  "Weryfikuję bezpieczeństwo zapytania",
 };

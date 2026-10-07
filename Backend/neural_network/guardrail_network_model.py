@@ -1,4 +1,4 @@
-# Backend/neural_network/guardrail_model.py
+# Backend/neural_network/guardrail_network_model.py
 import torch
 import torch.nn as nn
 

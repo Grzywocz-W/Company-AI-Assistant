@@ -18,7 +18,7 @@ from pydantic import BaseModel
 from fastapi.responses import StreamingResponse
 import json
 ###AI
-#from agents.coordinator import CoordinatorAgent
+from agents.coordinator import CoordinatorAgent
 from models import modelsList
 from helpers import extractFromPDF
 from configLoader import loadConfig
@@ -42,7 +42,7 @@ origins =[
     ########################
     "http://localhost:54557",
     "http://127.0.0.1:54557",
-    "http://192.168.1.15:54557",
+    #"http://192.168.1.15:54557",
 ]
 
 react.add_middleware(
@@ -54,7 +54,7 @@ react.add_middleware(
 )
 
 
-defaultModel ="gemi3_1_fl"
+defaultModel ="gemi3_5_fl"
 
 #backendConfig = loadConfig('config.txt')
 modelName = backendConfig.get("MAIN_MODEL", defaultModel)
@@ -65,8 +65,8 @@ except Exception as e:
     print("Nie ma takiego modelu")
     model = modelsList[defaultModel]
 
-#model = modelsList.gemi3_1_fl
-#coordAgent = CoordinatorAgent(model=model)
+model = modelsList.gemi3_5_fl
+coordAgent = CoordinatorAgent(model=model)
 
 
 #!!!!!DODAĆ ZWALNANIE PAMIĘCI!!!!!!!

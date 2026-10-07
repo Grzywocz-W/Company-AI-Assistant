@@ -1,6 +1,6 @@
-MAIN_MODEL=gemi3_1_fl
+MAIN_MODEL=gemi3_5_fl
 VECTOR_DB_PATH=vectorDB
-OLLAMA_UR=http://localhost:11434
+OLLAMA_URL=http://localhost:11434
 
 DOCUMENTS_PATH=
 VECTOR_DB_PATH=

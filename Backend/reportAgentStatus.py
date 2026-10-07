@@ -7,6 +7,7 @@ from langchain_core.callbacks import AsyncCallbackHandler
 
 
 class AgentCallingStatus(str, Enum):
+    SECURITY = "SECURITY"
     DATABASE = "DATABASE"
     RAG = "RAG"
     INTERNET = "INTERNET"
@@ -26,6 +27,9 @@ class AgentStatusAsyncCallbackHandler(AsyncCallbackHandler):
     async def on_chain_start(self, *args, **kwargs):
         pass
         
+    async def on_chain_end(self, *args, **kwargs):
+        pass
+
     async def on_tool_end(self, *args, **kwargs):#powrtó do myslenia
         await self.queue.put(
                 json.dumps(
@@ -34,9 +38,7 @@ class AgentStatusAsyncCallbackHandler(AsyncCallbackHandler):
                         "data": AgentCallingStatus.THINKING.value
                         })
                 )
-        
-    async def on_chain_end(self, *args, **kwargs):
-        pass
+
             #nazwa to wymóg langChaina
     async def on_tool_start(self, serialized, input_str, **kwargs):
         agentName = serialized.get("name")
@@ -48,6 +50,8 @@ class AgentStatusAsyncCallbackHandler(AsyncCallbackHandler):
             status = AgentCallingStatus.RAG
         elif agentName == "AgentPrzeszukaniaInternetu":
             status = AgentCallingStatus.INTERNET
+        elif agentName == "AgentBezpieczenstwa":
+            status = AgentCallingStatus.SECURITY
             
         if status:
             await self.queue.put(

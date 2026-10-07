@@ -41,7 +41,7 @@ class RagAgent:
             self.vectorDataBase = None
 
         def searchVectorDataBase(sentence: str):# dodano str, bo był błąd podczas pytania o liczby
-            if self.vectorDataBase == None:
+            if self.vectorDataBase is None:
                 return "Błąd backendu. Baza wektorowa niezdefiniowana"
             try:
                 mostAccurateDocuments = self.vectorDataBase.similarity_search(sentence,k=3)#potestować dla różnego k

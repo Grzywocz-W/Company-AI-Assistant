@@ -12,7 +12,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report, confusion_matrix
 import pickle
 
-from guardrail_model import GuardrailNN
+from guardrail_network_model import GuardrailNN
 
 
 class GuardrailDataset(Dataset):
@@ -135,6 +135,7 @@ def train():
 
     print("[TRAIN] Macierz pomyłek:")
     print(confusion_matrix(all_labels, all_preds))
+
 
     # 9. Wykres loss
     plt.figure(figsize=(10, 5))
