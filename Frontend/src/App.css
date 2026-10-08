@@ -182,3 +182,84 @@
     border-right-color: var(--border);
   }
 }
+
+
+#docs ul{
+    gap: 12px;
+    flex-direction: column;
+}
+
+#docs ul li{
+    flex: 1 1 auto;/*powinno zapobiedz zniekszta³ceniom*/
+}
+
+#docs ul a{
+    line-height: 2;
+    width: 100%;
+    padding: 8px 16px;
+    white-space: normal; /*³amie d³ugie zdania*/
+    box-sizing: border-box;
+    display: block;
+    text-align:left;
+    background: transparent;
+    box-sizing: border-box;
+}
+
+#docs ul a:hover{
+    box-shadow: none;
+    background: rgba(255,255,255,0.1);
+}
+
+
+#left-side-bar{
+    padding: 8px 16px;
+    top:0;
+    left:0;
+    width: 360px;
+    height: 100px;
+    position: fixed;
+    box-sizing: border-box;
+}
+#left-side-bar ul {
+    gap: 12px;
+    flex-direction: column;
+    list-style: none;/*usuwa kropki*/
+}
+
+#left-side-bar ul li {
+    flex: 1 1 auto; /*powinno zapobiedz zniekszta³ceniom*/
+}
+
+#left-side-bar ul a {
+    /*skopiowa³em z ul a next side. Mog¹ byæ konflikty*/
+    color: var(--text-h);
+    font-size: 16px;
+    border-radius: 6px;
+    background: var(--social-bg);
+    display: flex;
+    padding: 6px 12px;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: box-shadow 0.3s;
+
+    line-height: 2;
+    width: 100%;
+    padding: 8px 16px;
+    white-space: normal; /*³amie d³ugie zdania*/
+    box-sizing: border-box;
+    display: block;
+    text-align: left;
+    background: transparent;
+    box-sizing: border-box;
+
+
+}
+
+    #left-side-bar ul a:hover {
+        box-shadow: none;
+        background: rgba(255,255,255,0.1);
+    }
+
+
+
