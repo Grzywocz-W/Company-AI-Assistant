@@ -126,15 +126,30 @@ def train():
             optimizer.step()
             epoch_loss += loss.item()
 
-        avg_loss = epoch_loss / len(train_loader)
-        train_losses.append(avg_loss)
-        scheduler.step(avg_loss)
+        avg_train_loss = epoch_loss / len(train_loader)
+        train_losses.append(avg_train_loss)
+
+        # Walidacja
+        model.eval()
+        epoch_val_loss = 0.0
+        with torch.no_grad():
+            for batch_X, batch_y in test_loader:
+                outputs = model(batch_X)
+                loss = criterion(outputs, batch_y)
+                epoch_val_loss += loss.item()
+
+        avg_val_loss = epoch_val_loss / len(test_loader)
+        val_losses.append(avg_val_loss)
+
+        # Scheduler reaguje na stratę walidacyjną
+        scheduler.step(avg_val_loss)
 
         # Wypisujemy co 10 epok + ostatnia
         if (epoch + 1) % 10 == 0 or epoch == EPOCHS - 1:
             current_lr = optimizer.param_groups[0]['lr']
             print(f"  Epoka [{epoch + 1:>3}/{EPOCHS}] "
-                  f"| Loss: {avg_loss:.4f} "
+                  f"| Train Loss: {avg_train_loss:.4f} "
+                  f"| Val Loss: {avg_val_loss:.4f} "
                   f"| LR: {current_lr:.6f}")
 
     print("-" * 55)
@@ -144,7 +159,7 @@ def train():
         model.state_dict(),
         'saved_models/guardrail_network_weights.pth'
     )
-    print("[TRAIN] Wagi modelu zapisane → saved_models/guardrail_network_weights.pth\n")
+    print("[TRAIN] Wagi modelu zapisane w: saved_models/guardrail_network_weights.pth\n")
 
 
 
@@ -173,24 +188,41 @@ def train():
     cm = confusion_matrix(all_labels, all_preds)
     print(cm)
     print("======================================================================")
-    print(f"\n  TN={cm[0,0]}  FP={cm[0,1]}")
+    print(f"  TN={cm[0,0]}  FP={cm[0,1]}")
     print(f"  FN={cm[1,0]}  TP={cm[1,1]}")
     print("======================================================================")
     print(f"\n  FP = klient ryzykowny przepuszczony jako bezpieczny")
     print(f"  FN = klient bezpieczny zablokowany przez pomyłkę")
 
+    # Macierz pomyłek (wykres)
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(
+        cm, annot=True, fmt='d', cmap='Blues',
+        xticklabels=['ZABLOKOWANO (0)', 'ZEZWOLONO (1)'],
+        yticklabels=['ZABLOKOWANO (0)', 'ZEZWOLONO (1)']
+    )
+    plt.title('Macierz pomyłek modelu Guardrail')
+    plt.ylabel('Rzeczywista etykieta')
+    plt.xlabel('Przewidziana etykieta')
+    plt.tight_layout()
+    plt.savefig('data/confusion_matrix.png')
+    plt.close()
+    print("[TRAIN] Macierz pomyłek (wykres) zapisana w: data/confusion_matrix.png")
+
     # 10. Wykres loss
     os.makedirs('data', exist_ok=True)
     plt.figure(figsize=(10, 5))
-    plt.plot(train_losses, label='Strata treningowa (BCELoss)', color='royalblue')
-    plt.title('Proces uczenia sieci Guardrail')
+    plt.plot(train_losses, label='Strata treningowa (Train Loss)', color='royalblue', linewidth=2)
+    plt.plot(val_losses, label='Strata walidacyjna (Val Loss)', color='darkorange', linewidth=2, linestyle='--')
+    plt.title('Krzywa uczenia sieci Guardrail (Loss Curve)')
     plt.xlabel('Epoka')
     plt.ylabel('BCELoss')
     plt.legend()
-    plt.grid(True)
+    plt.grid(True, linestyle=':', alpha=0.6)
     plt.tight_layout()
     plt.savefig('data/training_plot.png')
-    print("\n[TRAIN] Wykres zapisany w: data/training_plot.png")
+    plt.close()
+    print("[TRAIN] Wykres uczenia zapisany w: data/training_plot.png")
 
 
 if __name__ == "__main__":
