@@ -3,6 +3,7 @@ import os
 import sys
 import random
 from datetime import datetime, timedelta
+import unicodedata
 import mysql.connector
 from faker import Faker
 
@@ -63,12 +64,24 @@ PRODUKTY_MOCK = {
     ]
 }
 
-WOJEWODZTWA = [
-    "Mazowieckie", "Małopolskie", "Wielkopolskie", "Śląskie", "Dolnośląskie",
-    "Pomorskie", "Łódzkie", "Zachodniopomorskie", "Kujawsko-Pomorskie",
-    "Lubelskie", "Podkarpackie", "Opolskie", "Lubuskie", "Podlaskie",
-    "Świętokrzyskie", "Warmińsko-Mazurskie"
-]
+MIASTA_WOJEWODZTWA = {
+    "Warszawa": "Mazowieckie", "Radom": "Mazowieckie",
+    "Kraków": "Małopolskie", "Tarnów": "Małopolskie",
+    "Poznań": "Wielkopolskie", "Gniezno": "Wielkopolskie",
+    "Katowice": "Śląskie", "Gliwice": "Śląskie",
+    "Wrocław": "Dolnośląskie", "Legnica": "Dolnośląskie",
+    "Gdańsk": "Pomorskie", "Gdynia": "Pomorskie",
+    "Łódź": "Łódzkie", "Piotrków Trybunalski": "Łódzkie",
+    "Szczecin": "Zachodniopomorskie", "Koszalin": "Zachodniopomorskie",
+    "Bydgoszcz": "Kujawsko-Pomorskie", "Toruń": "Kujawsko-Pomorskie",
+    "Lublin": "Lubelskie", "Zamość": "Lubelskie",
+    "Rzeszów": "Podkarpackie", "Przemyśl": "Podkarpackie",
+    "Opole": "Opolskie", "Nysa": "Opolskie",
+    "Zielona Góra": "Lubuskie", "Gorzów Wielkopolski": "Lubuskie",
+    "Białystok": "Podlaskie", "Łomża": "Podlaskie",
+    "Kielce": "Świętokrzyskie", "Sandomierz": "Świętokrzyskie",
+    "Olsztyn": "Warmińsko-Mazurskie", "Elbląg": "Warmińsko-Mazurskie"
+}
 
 STATUSY_ZAMOWIENIA = [
     'Nowe', 'Oplacone', 'W realizacji',
@@ -77,14 +90,17 @@ STATUSY_ZAMOWIENIA = [
 METODY_PLATNOSCI = ['BLIK', 'Karta', 'Przelew', 'Za pobraniem']
 TYPY_KONTA = ['Standard', 'Premium', 'Firma']
 
+def usun_polskie_znaki(tekst):
+    return unicodedata.normalize('NFKD', tekst).encode('ascii', 'ignore').decode('utf-8')
 
-def generuj_baze_danych(liczba_klientow=60, liczba_zamowien=300):
+
+def generuj_baze_danych(liczba_klientow=300, liczba_zamowien=1000):
     backend_config = loadConfig('config.txt')
     try:
         conn = mysql.connector.connect(
             host=backend_config.get("DB_HOST_ADMIN", "127.0.0.1"),
             user=backend_config.get("DB_USER_ADMIN", "agent_admin"),
-            password=backend_config.get("DB_PASSWORD_ADMIN", "haslo_admina"),
+            password=backend_config.get("DB_PASSWORD_ADMIN", "admin_password"),
             database=backend_config.get("DB_NAME", "e_commerce_db")
         )
         cursor = conn.cursor()
@@ -97,11 +113,18 @@ def generuj_baze_danych(liczba_klientow=60, liczba_zamowien=300):
         for _ in range(liczba_klientow):
             imie = fake.first_name()
             nazwisko = fake.last_name()
-            email = fake.unique.email()
+            imie_bez = usun_polskie_znaki(imie).lower()
+            nazwisko_bez = usun_polskie_znaki(nazwisko).lower()
+            email = f"{imie_bez}.{nazwisko_bez}{random.randint(10, 999)}@{fake.free_email_domain()}"
             telefon = fake.phone_number()
-            miasto = fake.city()
-            wojewodztwo = random.choice(WOJEWODZTWA)
-            data_rejestracji = datetime.now() - timedelta(days=random.randint(1, 730))
+            miasto = random.choice(list(MIASTA_WOJEWODZTWA.keys()))
+            wojewodztwo = MIASTA_WOJEWODZTWA[miasto]
+            data_rejestracji = datetime.now() - timedelta(
+                days=random.randint(1, 730),
+                hours=random.randint(0, 23),
+                minutes=random.randint(0, 59),
+                seconds=random.randint(0, 59)
+            )
             typ_konta = random.choice(TYPY_KONTA)
             status_konta = random.choices(
                 ['Aktywne', 'Zablokowane', 'Niezweryfikowane'],
@@ -109,9 +132,9 @@ def generuj_baze_danych(liczba_klientow=60, liczba_zamowien=300):
                 k=1
             )[0]
 
-            # Zadłużenie: 70% klientów ma 0 zł, 30% ma losowe zadłużenie do 3000 zł
+            # Zadłużenie: 80% klientów ma 0 zł, 20% ma losowe zadłużenie do 3000 zł
             # Ta kolumna będzie używana przez sieć neuronową jako feature
-            if random.random() > 0.70:
+            if random.random() > 0.80:
                 stan_zadluzenia = round(random.uniform(50.00, 3000.00), 2)
             else:
                 stan_zadluzenia = 0.00
@@ -162,7 +185,9 @@ def generuj_baze_danych(liczba_klientow=60, liczba_zamowien=300):
             numer_zamowienia = f"ZA-{datetime.now().year}-{1000 + i}"
             data_zamowienia = datetime.now() - timedelta(
                 days=random.randint(1, 180),
-                hours=random.randint(0, 23)
+                hours=random.randint(0, 23),
+                minutes=random.randint(0, 59),
+                seconds=random.randint(0, 59)
             )
             status_zamowienia = random.choices(
                 STATUSY_ZAMOWIENIA,
@@ -178,7 +203,7 @@ def generuj_baze_danych(liczba_klientow=60, liczba_zamowien=300):
             id_produktu = produkty_ids[(produkt_nazwa, kategoria)]
 
             ilosc = random.choices([1, 2, 3], weights=[85, 12, 3], k=1)[0]
-            koszt_dostawy = 0.00 if random.random() > 0.5 else 14.99
+            koszt_dostawy = 0.00 if (cena_jednostkowa * ilosc) > 100.00 else 14.99
             metoda_platnosci = random.choice(METODY_PLATNOSCI)
 
             sql = """
@@ -212,4 +237,4 @@ def generuj_baze_danych(liczba_klientow=60, liczba_zamowien=300):
 
 
 if __name__ == "__main__":
-    generuj_baze_danych(liczba_klientow=100, liczba_zamowien=300)
+    generuj_baze_danych(liczba_klientow=300, liczba_zamowien=1000)

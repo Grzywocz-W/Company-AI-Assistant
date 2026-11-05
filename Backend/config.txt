@@ -1,20 +1,22 @@
+# AI
 MAIN_MODEL=gemi3_5_fl
-VECTOR_DB_PATH=vectorDB
 OLLAMA_URL=http://localhost:11434
+ALLOWED_ADMIN_IP=127.0.0.1
+SESSION_LIFESPAN_LIMIT=5400
 
-DOCUMENTS_PATH=
-VECTOR_DB_PATH=
+# Vector DB
+DOCUMENTS_PATH=company_documents_for_ai
+VECTOR_DB_PATH=vectorDB
 
-# Wspólna nazwa bazy danych (zdefiniowana w naszym schema.sql)
+# Wspólna nazwa bazy danych
 DB_NAME=e_commerce_db
 
 # Konfiguracja dla zwykłego klienta (tylko odczyt danych)
 DB_HOST_CUSTOMER=127.0.0.1
 DB_USER_CUSTOMER=db_user
 DB_PASSWORD_CUSTOMER=db_password
-DB_NAME=sklep
 
 # Konfiguracja dla administratora (dostęp do modyfikacji)
 DB_HOST_ADMIN=127.0.0.1
 DB_USER_ADMIN=agent_admin
-DB_PASSWORD_ADMIN=haslo_admina
+DB_PASSWORD_ADMIN=admin_password

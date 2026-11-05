@@ -70,16 +70,13 @@ CREATE TABLE IF NOT EXISTS zamowienia (
 
 -- Użytkownik dla zwykłego klienta (tylko odczyt)
 CREATE USER IF NOT EXISTS 'db_user'@'localhost' IDENTIFIED BY 'db_password';
-
 GRANT SELECT ON e_commerce_db.* TO 'db_user'@'localhost';
 
 -- Użytkownik dla administratora (pełen dostęp do danych, bez zmian struktury)
-CREATE USER IF NOT EXISTS 'agent_admin'@'localhost' IDENTIFIED BY 'haslo_admina';
+CREATE USER IF NOT EXISTS 'agent_admin'@'localhost' IDENTIFIED BY 'admin_password';
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON e_commerce_db.klienci TO 'agent_admin'@'localhost';
-
 GRANT SELECT, INSERT, UPDATE, DELETE ON e_commerce_db.produkty TO 'agent_admin'@'localhost';
-
 GRANT SELECT, INSERT, UPDATE, DELETE ON e_commerce_db.zamowienia TO 'agent_admin'@'localhost';
 
 -- Odświeżenie uprawnień
