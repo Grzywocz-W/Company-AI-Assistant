@@ -74,9 +74,9 @@ def pobierz_dane_z_bazy() -> pd.DataFrame:
 
 
 '''def oblicz_wskaznik_zwrotow(row: pd.Series) -> float:
-    if row['liczba_zamowien'] == 0:
+    if float(row['liczba_zamowien']) == 0.0:
         return 0.0
-    return round(row['liczba_zwrotow'] / row['liczba_zamowien'], 4)'''
+    return round(float(row['liczba_zwrotow']) / float(row['liczba_zamowien']), 4)'''
 
 
 def generuj_etykiete(row: pd.Series) -> int:
@@ -132,7 +132,8 @@ def generuj_dataset():
 
     # --- KROK 2: Wylicz pochodne cechy ---
     df['typ_konta_num']    = df['typ_konta'].map(TYP_KONTA_MAP).fillna(0).astype(int)
-    df['wskaznik_zwrotow'] =  (df['liczba_zwrotow'] / df['liczba_zamowien']).fillna(0.0).round(4)
+    df['wskaznik_zwrotow'] = df['liczba_zwrotow'].astype(float).div(
+        df['liczba_zamowien'].astype(float).replace(0, np.nan)).fillna(0.0).round(4)
     df['decyzja']          = df.apply(generuj_etykiete, axis=1)
 
     # Kolejność musi być identyczna jak INPUT_DIM=10 w modelu!
