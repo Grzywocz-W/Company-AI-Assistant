@@ -1,6 +1,7 @@
 #coordinator.py
 import os
 import asyncio
+import sys
 ###AI
 from langchain_google_genai import ChatGoogleGenerativeAI
 #from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
@@ -11,6 +12,7 @@ from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import Tool
 ####
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models import modelsList
 from modelSelector import createLLM
 from agents.database_agent import DatabaseAgent

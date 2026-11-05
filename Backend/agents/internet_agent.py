@@ -1,6 +1,7 @@
 #internet_agent.py
 #ddgs i duckduckgo
 import os
+import sys
 ###AI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_classic.agents import create_react_agent, AgentExecutor
@@ -11,6 +12,7 @@ from langchain_core.tools import Tool
 ###internet
 from langchain_community.tools import DuckDuckGoSearchRun
 ###
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models import modelsList
 from modelSelector import createLLM
 from agents.prompts.prompts import NET_SEARCH_PROMPT

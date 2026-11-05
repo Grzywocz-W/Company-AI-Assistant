@@ -1,9 +1,11 @@
 # security_agent.py
 import os
+import sys
 from langchain_classic.agents import create_react_agent, AgentExecutor
 from langchain_core.prompts import PromptTemplate
 from langchain_core.tools import Tool
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models import modelsList
 from modelSelector import createLLM
 from agents.prompts.prompts import SECURITY_PROMPT
