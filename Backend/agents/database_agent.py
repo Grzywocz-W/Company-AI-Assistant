@@ -1,6 +1,10 @@
 #database_agent.py
 import os
 import sys
+import re
+import pickle
+import torch
+import numpy as np
 import mysql.connector
 ###AI
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -17,11 +21,22 @@ from models import modelsList
 from modelSelector import createLLM
 from configLoader import loadConfig
 from agents.prompts.prompts import DATABASE_PROMPT
+from neural_network.guardrail_network_model import GuardrailNN
+try:
+    from neural_network.guardrail_checker import GuardrailChecker
+    _guardrail = GuardrailChecker()
+    _guardrailAvailable = _guardrail._is_loaded
+    if _guardrailAvailable:
+        print("[DatabaseAgent] Guardrail załadowany pomyślnie.")
+    else:
+        print("[DatabaseAgent] Guardrail niedostępny — tryb awaryjny (operacje dozwolone).")
+except Exception as e:
+    print(f"[DatabaseAgent] Błąd ładowania Guardrail: {e}")
+    _guardrail = None
+    _guardrailAvailable = False
 
 api_key = os.getenv("Gemini_API_Key")
-
 backendConfig = loadConfig('config.txt')
-# Na górze pliku database_agent.py
 
 
 class DatabaseAgent:
@@ -43,17 +58,38 @@ class DatabaseAgent:
                  ),
             ]
 
-        
-
         prompt = PromptTemplate.from_template(DATABASE_PROMPT)
         reactAgent = create_react_agent(self.model, self.tools, prompt)
-
         self.agentExecutor = AgentExecutor(
             agent = reactAgent,
             tools = self.tools,
             verbose=True,#wypisuje w konsoli jak myśli
             handle_parsing_errors=True,
             )
+
+
+    def _checkGuardrail(self, id_klienta: int) -> tuple:
+        """
+        Wywołuje GuardrailChecker dla danego klienta z progiem 0.6 (podniesiony próg w celu dodatkowego zabezpieczenia przed FP).
+        Zwraca (is_allowed: bool, message: str).
+        GuardrailChecker sam pobiera 10 cech z bazy i uruchamia sieć PyTorch.
+        """
+        if not _guardrailAvailable or _guardrail is None:
+            return True, "Guardrail niedostępny - operacja domyślnie dozwolona."
+
+        try:
+            # sprawdz() zwraca (is_allowed, probability, message) z progiem 0.6 bo FN bezpieczniejsze niż FP
+            is_allowed, probability, msg = _guardrail.sprawdz(id_klienta)
+
+            print(f"[Guardrail] id={id_klienta} | prob={probability:.4f} | "
+                  f"{'ZEZWOLONO' if is_allowed else 'ZABLOKOWANO'}")
+            return is_allowed, msg
+
+        except Exception as e:
+            print(f"[DatabaseAgent] Błąd guardrail dla klienta {id_klienta}: {e}")
+            # Fail-open przy błędzie technicznym
+            return True, f"Błąd guardrail: {e}"
+
 
     def askDatabase(self, sql_query: str):
     #oczyszczenie z markdown, inaczej sql wywali error
@@ -65,16 +101,26 @@ class DatabaseAgent:
             if action in sql_query.upper():
                 hasProhibitedInQuery = True
                 break
+
+        # Guardrail: wyłącznie dla operacji MODYFIKUJĄCYCH dane klienta
+        if hasProhibitedInQuery:
+            match = re.search(r'id_klienta\s*=\s*(\d+)', sql_query, re.IGNORECASE)
+            if match:
+                id_klienta = int(match.group(1))
+                is_allowed, guardrail_msg = self._checkGuardrail(id_klienta)
+                if not is_allowed:
+                    return (f"Operacja zablokowana przez system oceny ryzyka (Guardrail AI). "
+                            f"Szczegóły: {guardrail_msg}")
         
         try:
-            if not self.isAdmin:#zazwyczaj nie będzie adminem a więc not False = True
+            if not self.isAdmin: #zazwyczaj nie będzie adminem a więc not False = True
                 if hasProhibitedInQuery:
-                    return "Odmowa dostępu. Niedozwolone polecenie"
+                    return "Odmowa dostępu. Niedozwolone polecenie dla zwykłego użytkownika."
                 loginHost=backendConfig.get("DB_HOST_CUSTOMER")
                 loginUser=backendConfig.get("DB_USER_CUSTOMER")
                 loginPassword=backendConfig.get("DB_PASSWORD_CUSTOMER")
                 loginDatabase=backendConfig.get("DB_NAME")
-            else:# dostęp admina. Potem się zmieni hasło
+            else:
                 loginHost=backendConfig.get("DB_HOST_ADMIN")
                 loginUser=backendConfig.get("DB_USER_ADMIN")
                 loginPassword=backendConfig.get("DB_PASSWORD_ADMIN")
@@ -91,16 +137,16 @@ class DatabaseAgent:
             cursor.execute(sql_query)
 
             if hasProhibitedInQuery:
-                conn.commit() # pozwala na zmiany do bazy
-                editedRows = cursor.rowcount #ile usuniętych rekordów
+                conn.commit()
+                editedRows = cursor.rowcount
                 cursor.close()
                 conn.close()
                 return f"Dokonano modyfikacji {editedRows} wierszy"
             
             results = cursor.fetchall()
-            
             cursor.close()
             conn.close()
+
             if not results:
                 return f"Wykonano zapytanie: {sql_query}, ale baza jest pusta lub nic nie pasuje."
                 
@@ -126,8 +172,6 @@ class DatabaseAgent:
             else:
                 return str(response)
 
-        ###odpowiedź zawiera też podpis(signature)
-        #response = response.content#wydobywamy tylko zawartość
         except Exception as e:
             print(f"[AgentBazyDanych] Błąd agenta bazy danych: {e}")
             return f"Błąd systemu: Błąd agenta bazy danych {e}"

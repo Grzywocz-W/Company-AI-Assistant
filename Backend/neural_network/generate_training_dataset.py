@@ -133,7 +133,7 @@ def generuj_dataset():
     # --- KROK 2: Wylicz pochodne cechy ---
     df['typ_konta_num']    = df['typ_konta'].map(TYP_KONTA_MAP).fillna(0).astype(int)
     df['wskaznik_zwrotow'] = df['liczba_zwrotow'].astype(float).div(
-        df['liczba_zamowien'].astype(float).replace(0, np.nan)).fillna(0.0).round(4)
+                            df['liczba_zamowien'].astype(float).replace(0, np.nan)).fillna(0.0).round(4)
     df['decyzja']          = df.apply(generuj_etykiete, axis=1)
 
     # Kolejność musi być identyczna jak INPUT_DIM=10 w modelu!
@@ -218,7 +218,6 @@ def generuj_dataset():
     df_final.loc[idx_szum, 'decyzja'] = 1 - df_final.loc[idx_szum, 'decyzja']
 
     # --- KROK 5: Zapis ---
-    #os.makedirs('Backend/neural_network/data', exist_ok=True)
     #sciezka = 'Backend/neural_network/data/guardrail_dataset.csv'
     base_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(base_dir, 'data')

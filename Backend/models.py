@@ -9,4 +9,6 @@ class modelsList(Enum):
 
     ollama_llama3 = "ollama/llama3"
 
-    ollama_qwen25 = "ollama/qwen2.5"
+    ollama_qwen25 = "ollama/qwen2.5:7b"
+
+    #ollama_deepseek_r1 = "ollama/deepseek-r1:8b"

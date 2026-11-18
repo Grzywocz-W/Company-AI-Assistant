@@ -8,7 +8,6 @@ Odpowiada za:
 3. Uruchomienie inferencji sieci neuronowej
 4. Zwrócenie decyzji (True/False) wraz z komunikatem do agenta
 """
-
 import os
 import sys
 import pickle
@@ -23,7 +22,6 @@ if _BACKEND_DIR not in sys.path:
     sys.path.insert(0, _BACKEND_DIR)
 
 from configLoader import loadConfig
-
 # Obsługa importu GuardrailNN
 try:
     from guardrail_network_model import GuardrailNN
@@ -68,7 +66,7 @@ class GuardrailChecker:
                 Jeśli pliki nie istnieją (model jeszcze nie wytrenowany),
                 przechodzi w tryb awaryjny - wszystkie operacje modyfikacji
                 będą blokowane.
-                """
+        """
         if not os.path.exists(MODEL_PATH):
             print(f"[GUARDRAIL] UWAGA: Brak pliku modelu: {MODEL_PATH}")
             print("[GUARDRAIL] Uruchom najpierw: python train_model.py")
@@ -104,7 +102,7 @@ class GuardrailChecker:
 
     # Pobranie danych klienta z bazy
 
-    def _pobierz_features_klienta(self, id_klienta: int):
+    def _pobierz_features_klienta(self, id_klienta: int) -> dict:
         backend_config = loadConfig('config.txt')
         try:
             conn = mysql.connector.connect(
@@ -199,7 +197,7 @@ class GuardrailChecker:
 
     # Główna metoda publiczna
 
-    def sprawdz(self, id_klienta: int):
+    def sprawdz(self, id_klienta: int) -> tuple[bool, float, str]:
         """
                 Główna metoda guardrail - ocenia ryzyko operacji dla danego klienta.
                 Args:
@@ -232,16 +230,16 @@ class GuardrailChecker:
         with torch.no_grad():
             probability = self._model(tensor).item()
 
-        is_allowed = probability >= 0.5
+        is_allowed = probability >= 0.6
 
         if is_allowed:
             message = (
-                f"Guardrail: operacja dozwolona "
+                f"Guardrail: operacja dozwolona dla klienta id={id_klienta} "
                 f"(wiarygodność klienta: {probability:.2%})."
             )
         else:
             message = (
-                f"Guardrail: operacja ZABLOKOWANA "
+                f"Guardrail: operacja ZABLOKOWANA dla klienta id={id_klienta}"
                 f"(ocena ryzyka: {(1.0 - probability):.2%}). "
                 f"Klient nie spełnia kryteriów bezpieczeństwa."
             )

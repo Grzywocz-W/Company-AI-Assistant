@@ -16,6 +16,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models import modelsList
 from modelSelector import createLLM
 from agents.prompts.prompts import NET_SEARCH_PROMPT
+from configLoader import loadConfig
+backendConfig = loadConfig('config.txt')
 #
 api_key = os.getenv("Gemini_API_Key")
 
@@ -31,13 +33,21 @@ class InternetAgent:
 ##            )
         
         self.searchInternet = DuckDuckGoSearchRun()
-        
+        '''self.searxInternet = SearxSearchWrapper(
+            searx_host=backendConfig.get("SEARXNG_URL", "http://localhost:8080"),  # adres kontenera
+            k=5  # liczba wyników
+        )'''
         
         self.tools =[
             Tool(name = "DuckDuckGoSearch",
                  func= self.searchInternet.run,
                  description = "Używaj do przeszukania internetu"
                  ),
+            '''Tool(
+                name="SearXNGSearch",
+                func=self.searchInternet.run,
+                description="Używaj do przeszukania internetu"
+                )'''
             ]
         
 

@@ -65,7 +65,6 @@ except Exception as e:
     print("Nie ma takiego modelu")
     model = modelsList[defaultModel]
 
-model = modelsList.gemi3_5_fl
 coordAgent = CoordinatorAgent(model=model)
 
 

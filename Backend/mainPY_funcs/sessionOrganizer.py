@@ -6,7 +6,7 @@ from configLoader import loadConfig
 
 
 backendConfig = loadConfig('config.txt')
-sessionLifespan = int(backendConfig.get("SESSION_LIFESPAN_LIMIT", 5400))#5400s
+sessionLifespan = int(backendConfig.get("SESSION_LIFESPAN_LIMIT", 3600))#3600s
 
 #jeden użytkwonik = jedna sesja
 sessionsDict= {}#'Michal', <obiekt>

@@ -78,6 +78,7 @@ if __name__ == "__main__":
     9. anulowane_30dni      - liczba anulowanych w ostatnich 30 dniach
     """
 
+    # 2 testy architektury sieci
     INPUT_DIM = 10
     model = GuardrailNN(input_dim=INPUT_DIM)
     model.eval()
