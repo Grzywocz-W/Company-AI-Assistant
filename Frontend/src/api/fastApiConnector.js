@@ -1,53 +1,77 @@
 //fastApiConnector
 
-import { BASE_URL } from '../constants/config'//importujemy z innego pliku
-
-export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, isAdmin = false, onStatusChange = null) =>
+import
 {
-    const requestDataForm = new FormData();//aby doda� pdf'a trzeba stworzy� forma
+    BASE_URL
+}
+    from '../constants/config'//importujemy z innego pliku
 
-    //nazwy p�l musz� si� zgadza� z tym co jest w main.py
-    requestDataForm.append('sessionID', sessionID);
-    requestDataForm.append('request', text);
+export const sendTextToFastAPI = async (
+    text,
+    sessionID,
+    attachedFile = null,
+    isAdmin = false,
+    onStatusChange = null
+) =>
+{
+    const fastApiRequestDataForm = new FormData();//aby dodać pdf'a trzeba stworzyć forma
 
-    requestDataForm.append('isAdmin', isAdmin);
+    //nazwy pól muszą się zgadzać z tym co jest w main.py (backend)
+    fastApiRequestDataForm.append(
+        'sessionID',
+        sessionID
+    );
+    fastApiRequestDataForm.append(
+        'request',
+        text
+    );
 
-
-    if (attachedFile)
-    {
-        requestDataForm.append('attachedFile', attachedFile)
+    if (attachedFile) {
+        fastApiRequestDataForm.append(
+            'attachedFile',
+            attachedFile
+        )
     }
+
+    fastApiRequestDataForm.append(
+        'isAdmin', isAdmin
+    );
+
+
 
 
     try {
-        const response = await fetch(`${BASE_URL}/chat`, {
+        const responseFromBackend = await fetch(
+            `${BASE_URL}/chat`,
+            {
             method: 'POST',
-            //przegl�darka powinna sobie poradzi� bez tego
-            //headers: {
-            //    'Content-Type': 'application/json',
-            //},
-            //body: JSON.stringify(
-            //    {
-            //        sessionID: sessionID,
-            //        text: text,
-            //    }
-            //),
-            body: requestDataForm
-        });
+            body: fastApiRequestDataForm
+            }
+        );
 
-        if (!response.ok) {
-            throw new Error('Błąd sieci z FastAPI');
+        if (!responseFromBackend.ok)
+        {
+            throw new Error(
+                'Błąd połączenia sieci z FastAPI'
+            );
         }
 
-        const toolCallingStreamReader = response.body.getReader();//odczyt kawa�ek po kawa�ku
         const textDecoder = new TextDecoder();//dane to surowe bajty
 
-        let streamBuffer = '';
-        let streamOutput = '';
 
-        while (true)//dzia�a tak d�ugo, a� stream si� nie zako�czy
-        {           //nazwy te s� zdefiniowane przez reacta
-            const { done, value } = await toolCallingStreamReader.read();//czeka na wywo�anie narz�dzia
+        let streamBuffer = '';
+
+
+
+        const toolCallingOutputStreamReader = responseFromBackend.body.getReader();//odczyt kawałek po kawa�ku
+        
+
+        let streamOutput = '';
+        while (true)//działa tak długo, aż stream się nie zakończy
+        {           //nazwy te są zdefiniowane przez reacta
+            const {
+                done, value
+            } = await toolCallingOutputStreamReader.read();//czeka na wywołanie narzędzia
 
             if (done)
             {
@@ -55,63 +79,74 @@ export const sendTextToFastAPI = async (text, sessionID, attachedFile = null, is
             }
 
 
-            streamBuffer = streamBuffer + textDecoder.decode(value, { stream: true });
+            streamBuffer = streamBuffer + textDecoder.decode(
+                value,
+                {
+                    stream: true
+                }
+            );
 
             const lines = streamBuffer.split('\n');
 
-            streamBuffer = lines.pop();//ostatnia linijka mo�e nie by� pe�na
-
+            let poppedLines = lines.pop();
+            //ostatnia linijka może nie być pełna
+            streamBuffer = poppedLines;
             for (const line of lines)// of nie in
             {
-                if (line.trim() != '')//wyci�gamy warto�ci z p�l
+
+                if (line.trim() != '')//wyciągamy wartości z pól
                 {
                     try
                     {
-                        const dataFromJson = JSON.parse(line);
+                        const dataExtractedFromJson = JSON.parse(line);
 
-                        if (dataFromJson.type === "status" && onStatusChange) {
-                            onStatusChange(dataFromJson.data)
+                        if (dataExtractedFromJson.type === "status" && onStatusChange
+                        )
+                        {
+                            onStatusChange(dataExtractedFromJson.data)
                         }
-                        else if (dataFromJson.type === "final") {
-                            streamOutput = dataFromJson.data;
+                        else if
+                            (dataExtractedFromJson.type === "error") {
+                            throw new Error(dataExtractedFromJson.data);
                         }
-                        else if (dataFromJson.type === "error") {
-                            throw new Error(dataFromJson.data);
+                        else if (
+                            dataExtractedFromJson.type === "final")
+                        {
+                            streamOutput = dataExtractedFromJson.data;
                         }
+                        
                     }
                     catch (parseError)// normalny error jest pod koniec
                     {
                         if(!(parseError instanceof SyntaxError))
                         {
-                            throw parseError; //jest to b��d backendu. Ignorujemy
+                            throw parseError; //jest to błąd backendu. Ignorujemy
                         }
-                        console.warn("Uszkodzony fragment strumienia LLM zignorowany:", line);
+                        console.warn(
+                            "Komunikat: Uszkodzony fragment strumienia LLM zignorowany:",
+                            line
+                        );
                     }
                     
                 }
             }
         }//while
 
-        if (typeof streamOutput === "object" && streamOutput !== null)//LangChain lubi zwraca� obiekt, a nie stringa
+        if (typeof streamOutput === "object" && streamOutput !== null)//LangChain lubi zwracać obiekt, a nie stringa
         {
             return streamOutput.text || JSON.stringify(streamOutput)
         }
 
         return streamOutput;
 
-        //const data = await response.json();
-        ////return data.result;
-        //if (typeof data.result === "object" && data.result !== null)// przez LangChaina Python zwraca signature odpowiedzi, wi�c doda�em zabezpiecznie. Uwa�aj Wojtek.
-        //{
-        //    return data.result.text || JSON.stringify(data.result)
-        //}
 
-        //return data.result;
 
     }
     catch (error)
     {
-        console.error("Wystąpił błąd podczas wysyświetlania:", error);
-        throw error; // Rzucamy b��d dalej, aby obs�u�y� go w komponencie
+        console.error(
+            "Wystąpił błąd podczas wysyświetlania:", error
+        );
+        throw error; // Rzucamy błąd dalej, aby obsłużyć go w komponencie
     }
 };

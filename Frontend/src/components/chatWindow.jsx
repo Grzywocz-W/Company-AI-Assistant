@@ -10,11 +10,26 @@ import ReactMarkdown from 'react-markdown';
 import {
     sendTextToFastAPI
 } from '../api/fastApiConnector';
-import './ChatWindow.css';
-import { AgentCallingStatusEnum } from '../constants/agentCallingStatus';
-import { BASE_URL } from '../constants/config'//teraz jest w config.
+import './chatWindow.css';
 
-export default function ChatWindow() {
+//pliki
+import
+{
+    AgentCallingStatusEnum
+}
+    from '../constants/agentCallingStatus';
+import
+{
+    BASE_URL//podstawowy URL PODCZAS TETSOWANIA
+}
+    from '../constants/config'//teraz jest w config.
+
+export default function ChatWindow()
+{
+    const [isSessionOnline, setIsSessionOnline] = useState(true);
+    const sessionTimer = useRef(null);
+
+
     const [userInput, setUserInput] = useState('');
     //const [responseText, setResponseText] = useState('');//chyba niepotrzebne
     const [messagesList, setMessagesList] = useState([]);
@@ -22,64 +37,54 @@ export default function ChatWindow() {
 
     const [sessionID, setSessionID] = useState("");
 
-    const [isSessionOnline, setIsSessionOnline] = useState(true);
-    const sessionTimer = useRef(null);
-
-    const [attachedFile, setAttachedFile] = useState(null);//nieobowiązkowe
-    const attachedFileRef = useRef(null);
-
     const [responseStatus, setResponseStatus] = useState("THINKING");
 
     const [isAdminControl, setIsAdminControl] = useState(false);
 
-    const [isAdminPanelVisible, setIsAdminPanelVisible] = useState(false);
-    const [adminPassword, setAdminPassword] = useState("");
     const [hasAdminAccess, setHasAdminAccess] = useState(false);
 
     const messageEndingRef = useRef(null);
 
-    const updateSessionTime = () =>
-    {
-        if (sessionTimer.current)
-        {
-            clearTimeout(sessionTimer.current);
-        }
+    const [attachedFile, setAttachedFile] = useState(null);//nieobowiązkowe
+    const attachedFileRef = useRef(null);
 
-        sessionTimer.current = setTimeout(() => {
-            setIsSessionOnline(false);
-            const expiredMessage =
-            {
-                role: 'ai',
-                text: 'Sesja wygasła ze względów bezpieczeństwa. Spróbuj ponownie',
-            };
-            setMessagesList((prev) => [...prev, expiredMessage]);
 
-        }, 1800000);
-    }
 
-    useEffect(() =>
+    const [isAdminPanelVisible, setIsAdminPanelVisible] = useState(false);
+    const [adminPassword, setAdminPassword] = useState("");
+
+  
+
+    useEffect(
+        () =>
     {
         const randSessID = "ses_" + crypto.randomUUID();//potem dodać numerowanie sesji
         setSessionID(randSessID);// podkreśla bo nie generuje losowe treści i taki jest problem
 
         //najpierw sprawdzamy ip admina, potem timer
-        const adminIpVerification = async () => {
-            try {
-                const ipResponse = await fetch(`${BASE_URL}/check-ip`);
+        const adminIpVerification = async () =>
+        {
+            try
+            {
+                const ipResponse = await fetch(
+                    `${BASE_URL}/check-ip`
+                );
                 const isAdminPrivAllowed = await ipResponse.json();
 
-                if (isAdminPrivAllowed['is-admin-control-allowed'] === true) {
+                if (isAdminPrivAllowed['is-admin-control-allowed'] === true)
+                {
                     setIsAdminControl(true);
                 }
             }
-            catch (error) {
-                console.error("Nie da się sprawdzić IP:", error);
+            catch (error)
+            {
+                console.error("Nie można sprawdzić adresu IPv4:", error);
             }
         };
         adminIpVerification();
 
 
-        updateSessionTime();
+        updateValueSessionTimer();
         return () =>
         {
             if (sessionTimer.current)
@@ -89,19 +94,49 @@ export default function ChatWindow() {
         }
 
         
-    },[]
+    },
+        []
     );
 
     useEffect(() =>
     {
         if (messageEndingRef.current)
         {
-            messageEndingRef.current.scrollIntoView({ behavior: "smooth" });
+            messageEndingRef.current.scrollIntoView(
+                { behavior: "auto" }
+            );
         }
     },
-        [messagesList, isResponding, responseStatus],)
+        [messagesList, isResponding, responseStatus],
+    )
         ;
     
+
+    const updateValueSessionTimer =
+        () =>
+        {
+            if (sessionTimer.current)
+            {
+            clearTimeout(sessionTimer.current);
+            }
+
+        sessionTimer.current = setTimeout(
+            () => {
+                setIsSessionOnline(false);
+                const expiredMessage =
+                {
+                    role: 'ai',
+                    text: 'Sesja wygasła z powodów bezpieczeństwa bezpieczeństwa. Odśwież stronę i spróbuj ponownie',
+                };
+                setMessagesList(
+                    (prev) => [...prev, expiredMessage]
+                );
+
+            },
+            1800000
+        );
+    }
+
 
     const handleSend = async () =>
     {
@@ -110,7 +145,7 @@ export default function ChatWindow() {
             return;
         }
 
-        updateSessionTime();//aktualizacja czasu
+        updateValueSessionTimer();//aktualizacja czasu
 
 
 
@@ -120,19 +155,28 @@ export default function ChatWindow() {
 
         setUserInput('');
         setAttachedFile(null)//opróżnij plik
+
+
         if (attachedFileRef.current)
         {
             attachedFileRef.current.value = '';
+
         }
 
         let textInUsersBubble = messageContent;
         if (fileAttachedToMessage)
         {
-            textInUsersBubble = `Załączono plik: ${fileAttachedToMessage.name}\n${messageContent}`;
+            textInUsersBubble = `Załączono plik: ${fileAttachedToMessage.name}\n${messageContent}`;//informujemy jaki plik został załączony i treść wiadomości
         }
 
-        const newMessageTMP = { role: 'user', text: textInUsersBubble }
-        setMessagesList((prev) => [...prev, newMessageTMP]);//prev, bo jak lista jest w await to cały czas pamięta poprzednią wersje
+        const newMessageTMP =
+        {
+            role: 'user',
+            text: textInUsersBubble
+        }
+        setMessagesList(
+            (prev) => [...prev, newMessageTMP]
+        );//prev, bo jak lista jest w await to cały czas pamięta poprzednią wersje
 
 
         setIsResponding(true);
@@ -147,19 +191,31 @@ export default function ChatWindow() {
                 sessionID,
                 fileAttachedToMessage,
                 hasAdminAccess,
-                (newStatus) => { setResponseStatus(newStatus) }//callback z serwera. Przychodzi paczka: z onStatusChange(dataFromJson.data)
+                (newStatus) => {
+                    setResponseStatus(newStatus)
+                }//callback z serwera. Przychodzi paczka: z onStatusChange(dataFromJson.data)
             );
 
-            const newMessageTMP = {role: 'ai', text: result}
-            setMessagesList((prev)=>[...prev, newMessageTMP]);
+            const newMessageTMP =
+            {
+                role: 'ai', text: result
+            }
+            setMessagesList(
+                (prev) => [...prev, newMessageTMP]
+            );
 
             
         }
         catch (error)
         {
             console.error("ERROR:", error);//error
-            const newMessageTMP = { role: 'ai', text: 'Błąd komunikacji z LLM' }
-            setMessagesList((prev) => [...prev, newMessageTMP]);
+            const newMessageTMP = {
+                role: 'ai',
+                text: 'Błąd komunikacji z LLM'
+            }
+            setMessagesList(
+                (prev) => [...prev, newMessageTMP]
+            );
             
         }
 
@@ -170,42 +226,49 @@ export default function ChatWindow() {
     //napis na pasku wiadomości
     let inputBarMessage = "";
 
-    if (isSessionOnline) {
-        inputBarMessage = "Zapytaj agenta...";
+    if (isSessionOnline)
+    {
+        inputBarMessage = "Zapytaj agenta ...";
     }
     else
     {
-        inputBarMessage = "Sesja wygasła. Odśwież stronę.";
+        inputBarMessage = "Sesja wygasła. Proszę odśwież stronę.";
     }
 
-    const handleAdminLogin = async () => {
-        if (!adminPassword.trim())
+    const handleAdminLogin = async () =>
+    {
+        if ( !adminPassword.trim() )
         {
             return;
         }
-
+        //testuje zapytanie
         try
         {
             const response = await fetch(`${BASE_URL}/admin-login`,
             {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
                     password: adminPassword,
                     sessionID: sessionID
-                })
+                    }
+                )
             });
 
             const loginData = await response.json()
 
-            if (loginData.status === "correct") {
+            if (loginData.status === "correct")
+            {
                 setHasAdminAccess(true);
-                console.log("Logowanie na admina")
+                console.log("Poprawnie zalogowano na administratora")
 
             }
             else
             {
-                console.log("Niepoprawna próba logowania na admina")
+                console.log("NNiepoprawnie zalogowane na administratora. Sprawdź backend")
             }
 
 
@@ -213,7 +276,10 @@ export default function ChatWindow() {
         }
         catch(error)
         {
-            console.error("Błąd przy logowaniu", error)
+            console.error(
+                "Nieznany i nieobsługiwany wyjątek, który wystąpił podczas logowania",
+                error
+            )
         }
 
 
@@ -225,22 +291,29 @@ export default function ChatWindow() {
 
     const handleAdminLogout = async () => {
         try {
-            const response = await fetch(`${BASE_URL}/admin-logout`,
+            const response = await fetch(
+                `${BASE_URL}/admin-logout`,
                 {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(
+                        {
                         sessionID: sessionID
-                    })
-                });
+                        }
+                    )
+                }
+            );
 
         }
-        catch (error) {
+        catch (error)
+        {
             console.error("Błąd przy wylogowywaniu", error)
         }
 
 
-        //czyścimy okienko
+        //Należy wyczyścić okno po zalogowaniu, aby system tego nie pamiętał
         setHasAdminAccess(false);
         setAdminPassword('');
         setIsAdminPanelVisible(false);
@@ -253,12 +326,15 @@ export default function ChatWindow() {
 
             {isAdminControl &&
                 (
-                <div className="adminHeader">
-                    {!hasAdminAccess ? (
+                <div className="admin_Header">
+                    {!hasAdminAccess ?
+                        (
                         <button
                             className="adminLoginButton"
-                            onClick={() => setIsAdminPanelVisible(true)}
-                            title="Admin Login Panel"
+                                onClick={
+                                    () => setIsAdminPanelVisible(true)
+                                }
+                            title="Zaloguj się do administratora"
                         >
                             ⚙️
                         </button>
@@ -266,16 +342,27 @@ export default function ChatWindow() {
                     ) : (
                         <button
                             className="adminLogoutButton"
-                            onClick={handleAdminLogout}
-                            title="Wyloguj z panelu Admina"
-                            style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}
+                                onClick={
+                                    handleAdminLogout
+                                }
+                            title="Wyloguj się konta Admina"
+                                style=
+                                {
+                                    {
+                                        fontSize: '1.2rem',
+                                        background: 'transparent',
+                                        cursor: 'pointer',
+                                        border: 'none',
+                                    }
+                                }
                         >
                             🔓
                         </button>
                 )
                 }
                 </div>   
-            )}
+                )
+            }
 
 
             {/*okno logowania*/ }
@@ -287,9 +374,16 @@ export default function ChatWindow() {
                         <p>Podaj hasło:</p>
                         <input
                             type="password"
-                            value={adminPassword}
-                            onChange={(e) => setAdminPassword(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleAdminLogin()}
+                            value=
+                            {
+                                adminPassword
+                            }
+                            onChange={
+                                (e) => setAdminPassword(e.target.value)
+                            }
+                            onKeyDown={
+                                (e) => e.key === 'Enter' && handleAdminLogin()
+                            }
                             autoFocus
                         />
                         <div className="adminPanelWindowButtons">
@@ -298,9 +392,13 @@ export default function ChatWindow() {
                                 setIsAdminPanelVisible(false);
                                 setAdminPassword('');
                             }
-                            }>Anuluj
+                            }
+                            >Anuluj
                             </button>
-                            <button className="loginBtn" onClick={handleAdminLogin}>
+                            <button className="loginBtn"
+                                onClick={handleAdminLogin
+                                }
+                            >
                                 Zaloguj
                             </button>
                         </div>
@@ -365,14 +463,20 @@ export default function ChatWindow() {
                 <input
                     type="file"
                     accept=".pdf"
-                    ref={attachedFileRef}
+                    ref={
+                        attachedFileRef
+                    }
                     className="fileExplorerWindow"
-                    onChange={(e) => setAttachedFile(e.target.files[0])}
+                    onChange={
+                        (e) => setAttachedFile(e.target.files[0])
+                    }
                 />
 
                 {/* Przycisk spinacza*/}
                 <button
-                    onClick={() => attachedFileRef.current.click()}
+                    onClick={
+                        () => attachedFileRef.current.click()
+                    }
                     disabled={isResponding || !isSessionOnline}
                     className="paperClipButton"
                     title="Załącz plik PDF"
@@ -381,14 +485,38 @@ export default function ChatWindow() {
                 </button>
                 <input
                     type="text"
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSend()} //Enter
-                    placeholder={inputBarMessage}
-                    disabled={isResponding || !isSessionOnline} //Blokada jak myśli lub out of sesji
+                    value=
+                    {
+                        userInput
+                    }
+                    onChange=
+                    {
+                        (e) => setUserInput(e.target.value)
+                    }
+                    onKeyDown=
+                    {
+                        (e) => e.key === 'Enter' && handleSend()
+                    } //Enter
+                    placeholder=
+                    {
+                        inputBarMessage
+                    }
+                    disabled=
+                    {
+                        isResponding || !isSessionOnline
+                    } //Blokada jak myśli lub out of sesji
                 />
 
-                <button onClick={handleSend} disabled={isResponding || !userInput.trim() || !isSessionOnline}>
+                <button
+                    onClick=
+                    {
+                        handleSend
+                    }
+                    disabled=
+                    {
+                        isResponding || !userInput.trim() || !isSessionOnline
+                    }
+                >
                     Wyślij
                 </button>
             </div>

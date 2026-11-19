@@ -2,30 +2,45 @@
 /*chatWindows.cs*/
 
 
-
+/* VS sam ustawia sobie formatowanie kodu. */
+/* chatWindow.css */
 :root {
-    --bg-main: #1e1e1e;
-    --bg-panel: #252525;
-    --bg-bubble-ai: #333;
-    --bg-mrk-code: #1a1a1a;
-    --bg-attach: #2a2a2a;
+    --bg-main: #29323b;
+    --bg-panel: #1b2026;
+    --bg-bubble-ai: #262525;
+    --bg-mrk-code: #171716;
+    --font-mrk-code: 'Courier New', Courier, monospace: 
+    --bg-attach: #292626;
+    --bg-btn-admin-login: #29323b;
+    --bg-btn-admin-login-hover: #465563;
     /*ważniejsze kolory*/
-    --main-color-text-bubble: #007bff;
-    --text-color: #ffffff;
-    --code-inline-bg: rgba(0, 0, 0, 0.2);
+    --main-color-text-bubble: #0024c7;
+    --text-color: #ffffff;/*biały*/
+    --code-inline-bg: rgba(0, 0, 0, 0.16);
     /*dla admina*/
     --admin-red: #ff4d4d;
     --admin-red-hover: #ff1a1a;
     --admin-bg: #221a1a;
     --admin-bg-panel: #2a1b1b;
-    --admin-shadow: rgba(255, 77, 77, 0.2);
+    --admin-shadow: rgba(255, 77, 77, 0.64);
+    --admin-panel-width: 300px;
+    --admin-border-rad-btn: 8px;
     /*formatowanie*/
     --border-rad-main: 12px;
     --border-rad-btn: 20px;
+    --border-rad-small: 6px;
+    --msg-chat-gap-dist: 15px;
     --font: inherit;
     /*ramki i przyciski*/
-    --ui-border-c: #444;
-    --ui-border-c-hover: #555;
+    --ui-border-c: #4a4747;
+    --ui-border-c-hover: #736e6e;
+    --bg-btn-send-is-active: #0ca637;
+    --bg-btn-send-is-disabled: #4a4747;
+    --bg-btn-attach-btn: #4d5575;
+    --bg-btn-attach-disabled: #4a4747;
+    --btn-size-icon: 45px;
+    /*Pole wprowadzania tekstu*/
+    --bg-text-input-bar: #222930;
     /*chat wielkości*/
     --chat-width: 800px;
     --chat-height: 600px;
@@ -34,20 +49,22 @@
     --font-size-small: 14px;
     --font-size-icons: 30px;
     /*redmode zmiana*/
-    --adminmode-transition-speed: 0.3s;
+    --adminmode-transition-speed: 0.25s;
     /*nakładanie*/
     --z-value: 1000;
-    --login-overlay-bg: rgba(0, 0, 0, 0.8);
+    --login-overlay-bg: rgba(0, 0, 0, 0.75);
     /*amimacja*/
     /*animacja*/
-    --animation-transition-speed: 0.3s;
+    --animation-transition-speed: 0.25s;
     --animation-gradient-c1: var(--bg-bubble-ai);
     --animation-gradient-c2: var(--ui-border-c);
-}
+    /*inne np. maxy*/
+    --bubble-maximum-width: 70%;
 
-/*IMPORTANT kasem server się zawiesi lub przeglądarka i trzeba go zresetować i zrobić w przegladarcel crtl+ shift + R*/
-/*Okno chatu */
-.chatWindow {
+}
+    /*IMPORTANT kasem server się zawiesi lub przeglądarka i trzeba go zresetować i zrobić w przegladarcel crtl+ shift + R*/
+    /*Okno chatu */
+    .chatWindow {
     width: 100%;
     max-width: var(--chat-width);
     height: var(--chat-height);
@@ -59,134 +76,105 @@
     display: flex;
     flex-direction: column;
 }
-
-/* historia rozmowy */
-.chatHistory {
+    /* historia rozmowy */
+    .chatHistory {
     padding: var(--border-rad-btn);
     flex-direction: column;
-    gap: 15px; /* ostępny między dymkami */
+    gap: var(--msg-chat-gap-dist); /* ostępny między dymkami */
     flex: 1; /* rozciąganie */
     display: flex;
     overflow-y: auto; /* przewijanie*/
 }
-
-/* Wiersz wiadomości - cała szerokość */
-.messageRow {
+    /* Wiersz wiadomości - cała szerokość */
+    .messageRow {
     display: flex;
 }
-
     /* UŻYTKOWNIK na prawo */
     .messageRow.user {
         justify-content: flex-end;
     }
-
     /* AI na lewo */
     .messageRow.ai {
         justify-content: flex-start;
     }
-
-/* "Dymek" z tekstem */
-.messageBubble {
+    /* "Dymek" z tekstem */
+    .messageBubble {
     font-size: var(--font-size-basic);
-    max-width: 75%;
+    max-width: var(--bubble-maximum-width);
     border-radius: var(--border-rad-main);
     padding: 4px 8px;
     line-height: 1.2;
     text-align: left;
     word-wrap: break-word;
-}
-
-    .messageBubble.user {
+} .messageBubble.user {
         background-color: var(--main-color-text-bubble);
-        color: white;
-        border-bottom-right-radius: 6px; /* W stylu mesengera*/
-    }
-
-    .messageBubble.ai {
+        color: var(--text-color);
+        border-bottom-right-radius: var(--border-rad-small); /* W stylu mesengera*/
+    } .messageBubble.ai {
         background-color: var(--bg-bubble-ai);
-        color: #fff;
-        border-bottom-left-radius: 4px;
+        color: var(--text-color);
+        border-bottom-left-radius: var(--border-rad-small);
     }
-
-/* Pasek inputu */
-.chatInputBar {
+    /* Pasek inputu */
+    .chatInputBar {
     padding: 15px;
     display: flex;
     background-color: var(--bg-panel);
     gap: 10px;
     border-top: 1px solid var(--ui-border-c);
-}
-
-    .chatInputBar input {
+} .chatInputBar input {
         padding: var(--border-rad-main);
         border-radius: var(--border-rad-btn);
         border: 1px solid var(--ui-border-c-hover);
-        background-color: var(--bg-bubble-ai);
+        background-color: var(--bg-text-input-bar);
         flex: 1;
-        color: white;
+        color: var(--text-color);
         outline: none;
-    }
-
-    .chatInputBar button {
+    } .chatInputBar button {
         padding: 10px 24px;
         border-radius: var(--border-rad-btn);
-        background-color: var(--main-color-text-bubble);
-        color: white;
+        background-color: var(--bg-btn-send-is-active);
+        color: var(--text-color);
         border: none;
         cursor: pointer;
         font-weight: bold;
-    }
-
-        .chatInputBar button:disabled {
-            background-color: var(--ui-border-c);
+    } .chatInputBar button:disabled {
+            background-color: var(--bg-btn-send-is-disabled);
             cursor: not-allowed;
         }
-
-/* Markdown**/
-
-.messageBubble p {
+    /* Markdown**/
+    .messageBubble p {
     font-size: var(--font-size-basic);
     margin: 0 0 10px 0;
-}
-
-    .messageBubble p:last-child {
+} .messageBubble p:last-child {
         margin-bottom: 0;
     }
-
-/* Punktory */
-.messageBubble ul, .messageBubble ol {
+    /* Punktory */
+    .messageBubble ul, .messageBubble ol {
     margin: 5px 0 10px 20px;
     padding-left: 20px;/*Aby nie ucinało punktorów*/
 }
-
-/* Bloki kodu, zablokować mu możliwość generowania*/
-.messageBubble pre {
+    /* Bloki kodu, zablokować mu możliwość generowania*/
+    .messageBubble pre {
     background-color: var(--bg-mrk-code);
-    border-radius: 6px;
+    border-radius: var(--border-rad-small);
     margin: 10px 0;
     overflow-x: auto; /* Pasek przewijania!!!*/
     padding: 10px;
-}
-
-.messageBubble code {
+} .messageBubble code {
     background-color: var(--code-inline-bg);
     padding: 4px 6px;
     border-radius: 3px;
     font-size: var(--font-size-basic);
-    font-family: 'Courier New', Courier, monospace;
+    font-family: var(--font-mrk-code);
 }
-
-/* wyłącznie dublowania tła*/
-.messageBubble pre code {
+    /* wyłącznie dublowania tła*/
+    .messageBubble pre code {
     background-color: transparent;
     padding: 0;
 }
-
-
-
-/*Przycisk z załącznikiem*/
-
-.fileAttachButton {
+    /*Przycisk z załącznikiem*/
+    .fileAttachButton {
     padding: 8px 15px;
     color: var(--main-color-text-bubble);
     background-color: var(--bg-attach);
@@ -196,68 +184,49 @@
     align-items: center;
     justify-content: space-between;
 }
-
-
-/*Przycisk do usuwania pliku*/
-.attachedFileRemoveButton {
+    /*Przycisk do usuwania pliku*/
+    .attachedFileRemoveButton {
     font-size: var(--font-size-basic);
     padding: 0 5px;
     background: none;
     border: none;
     cursor: pointer;
     color: var(--admin-red);
-}
-
-
-    .attachedFileRemoveButton:hover {
+} .attachedFileRemoveButton:hover {
         color: var(--admin-red-hover);
     }
-
-
-
-
-/* Ukryty input */
-.fileExplorerWindow {
+    /* Ukryty input */
+    .fileExplorerWindow {
     display: none;
 }
-
-/*Spinacz*/
-
+    /*Spinacz*/
 .chatInputBar button.paperClipButton {
     font-size: var(--font-size-icons);
-    color: white;
-    background-color: var(--ui-border-c);
+    color: var(--text-color);
+    background-color: var(--bg-btn-attach-btn);
     margin-right: 10px;
     border-radius: 50%; /*to co poniżej to do walki z formatem*/
-    width: 45px;
-    height: 45px;
+    width: var(--btn-size-icon);
+    height: var(--btn-size-icon);
     display: flex;
     align-items: center;
     padding: 0;
     justify-content: center;
-}
-
-    .chatInputBar button.paperClipButton:hover {
+} .chatInputBar button.paperClipButton:hover {
         background-color: var(--ui-border-c-hover);
-    }
-
-    .chatInputBar button.paperClipButton:disabled {
-        background-color: var(--bg-bubble-ai);
+    } .chatInputBar button.paperClipButton:disabled {
+        background-color: var(--bg-btn-attach-disabled);
         cursor: not-allowed;
         opacity: 0.7;
-    }
-
-.messageBubble.ai.thinking {
+    } .messageBubble.ai.thinking {
     background: linear-gradient( 
         90deg, 
-    var(--animation-gradient-c1) 25%, 
-    var(--animation-gradient-c1) 50%, 
-    var(--animation-gradient-c2) 75% );
+    var(--animation-gradient-c1) 24%, 
+    var(--animation-gradient-c1) 48%, 
+    var(--animation-gradient-c2) 72% );
     background-size: 150% 100%;
-    animation: flashingAnimation 1s infinite linear;
-}
-
-@keyframes flashingAnimation {
+    animation: flashingAnimation 2s infinite linear;
+} @keyframes flashingAnimation {
     0% {
         background-position: 175% 0;
     }
@@ -265,28 +234,20 @@
     100% {
         background-position: -175% 0;
     }
-}
-
-
-.chatWindow.masterMode {
+} .chatWindow.masterMode {
     background-color: var(--admin-bg);
     border: 2px solid var(--admin-red);
-    box-shadow: 0 0 20px var(--admin-shadow);
+    box-shadow: 0 0 32px var(--admin-shadow);
     transition: all var(--adminmode-transition-speed) ease;
-}
-
-    .chatWindow.masterMode .chatInputBar {
+} .chatWindow.masterMode .chatInputBar {
         border-top: 1px solid var(--admin-red);
         background-color: var(--admin-bg-panel);
-    }
-
-    .chatWindow.masterMode .adminLoginButton {
+    } .chatWindow.masterMode .adminLoginButton {
         color: var(--admin-red);
         text-shadow: 0 0 5px var(--admin-red);
     }
-
-/*okienko logowania*/
-.adminPanelWindow {
+    /*okienko logowania*/
+    .adminPanelWindow {
     position: absolute; /* nakłada się na chat tworząc gradient */
     justify-content: center;
     background-color: var(--login-overlay-bg);
@@ -297,56 +258,59 @@
     bottom: 0;
     right: 0;
     left: 0;
-}
-
-.adminPanelWindowPage {
-    width: 300px;
+} .adminPanelWindowPage {
+    width: var(--admin-panel-width);
     background-color: var(--bg-panel);
     border-radius: var(--border-rad-main);
     padding: 25px;
-    border: 1px solid var(--ui-border-c);
+    border: 1px solid var(--admin-red);
     color: var(--text-color);
     text-align: center;
-}
-
-    .adminPanelWindowPage input {
+    box-shadow: 0 0 16px var(--admin-shadow);
+} .adminPanelWindowPage input {
         width: 100%;
         color: var(--text-color);
         padding: 10px;
-        border-radius: 6px;
+        border-radius: var(--border-rad-small);
         border: 1px solid var(--ui-border-c-hover);
         margin: 15px 0;
         box-sizing: border-box;
         background-color: var(--bg-bubble-ai);
         outline: none;
-    }
-
-.adminPanelWindowButtons {
+    } .adminPanelWindowButtons {
     display: flex;
     justify-content: space-between;
     gap: 10px;
-}
-
-    .adminPanelWindowButtons button {
+} .adminPanelWindowButtons button {
         flex: 1;
         border: none;
         border-radius: var(--border-rad-btn);
         padding: 10px;
         font-weight: bold;
         cursor: pointer;
-    }
-
-    .adminPanelWindowButtons .exitBtn {
+    } .adminPanelWindowButtons .exitBtn {
         background-color: var(--ui-border-c);
         color: var(--text-color);
-    }
-
-        .adminPanelWindowButtons .exitBtn:hover {
+    } .adminPanelWindowButtons .exitBtn:hover {
             background-color: var(--ui-border-c-hover);
-        }
-
-    .adminPanelWindowButtons .loginBtn {
-        background-color: var(--main-color-text-bubble);
+        } .adminPanelWindowButtons .loginBtn {
+        background-color: var(--admin-red);
         color: var(--text-color);
     }
+    .adminPanelWindowButtons .loginBtn:hover {
+     background-color: var(--admin-red-hover);       
+    }
+
+
+.adminLoginButton {
+    border: 1px solid var(--ui-border-c);
+    color: var(--text-color);
+    background-color: var(--bg-btn-admin-login);
+    border-bottom-right-radius: var(--admin-border-rad-btn);
+    border-bottom-left-radius: var(--admin-border-rad-btn);
+    padding: 4px 16px;
+}
+.adminLoginButton:hover{
+    background-color: var(--bg-btn-admin-login-hover);
+}
 

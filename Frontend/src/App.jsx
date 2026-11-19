@@ -30,6 +30,34 @@ function App() {
         </button>
           </section>*/}
 
+          <section id="left-side-bar">
+             <svg className="icon" role="presentation" aria-hidden="true">
+                  <use href="/icons.svg#documentation-icon"></use>
+              </svg>
+
+              <h2>Instruckja obsługi</h2>
+              <p>Skrócona wersja</p>
+              <ul>
+                  <li>
+                      <a href="https://vite.dev/" target="_blank" rel="noopener noreferrer">
+                          1. Wpisz swoje zapytanie do systemu za pomocą pola zlokalizowanego na dole czatu.
+                          Zatwierdz swój wysłanie za pomocą przycisku po prawej stronie lub przyciskiem enter.
+                      </a>
+                  </li>
+                  <li>
+                      <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">
+                          2. Załącz plik PDF do analizy przez system i opisz twoje wymagania. Można załączyć tylko jeden plik.
+                      </a>
+                  </li>
+                  <li>
+                      <a href="https://vite.dev/" target="_blank" rel="noopener noreferrer">
+                          3. Jeśli pojawiają się problemy z systemem stosuj się do komunikatów w czacie lub odśwież stronę.
+                      </a>
+                  </li>
+              </ul>
+
+          </section>
+
       <ChatWindow />
 
       <div className="ticks"></div>
@@ -39,32 +67,61 @@ function App() {
           <svg className="icon" role="presentation" aria-hidden="true">
             <use href="/icons.svg#documentation-icon"></use>
           </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+          <h2>Instruckja obsługi</h2>
+          <p>Skrócona wersja</p>
+          {/*<ul>*/}
+          {/*  <li>*/}
+          {/*    <a href="https://vite.dev/" target="_blank" rel="noopener noreferrer">*/}
+          {/*      1. Wpisz swoje zapytanie do systemu za pomocą pola zlokalizowanego na dole czatu. */}
+          {/*      Zatwierdz swój wysłanie za pomocą przycisku po prawej stronie lub przyciskiem enter.*/}
+          {/*    </a>*/}
+          {/*  </li>*/}
+          {/*  <li>*/}
+          {/*    <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">*/}
+          {/*      2. Załącz plik PDF do analizy przez system i opisz twoje wymagania. Można załączyć tylko jeden plik.*/}
+          {/*    </a>*/}
+          {/*  </li>*/}
+          {/*  <li>*/}
+          {/*    <a href="https://vite.dev/" target="_blank" rel="noopener noreferrer">*/}
+          {/*      3. Jeśli pojawiają się problemy z systemem stosuj się do komunikatów w czacie lub odśwież stronę.*/}
+          {/*    </a>*/}
+          {/*  </li>*/}
+          {/*</ul>*/}
         </div>
         <div id="social">
           <svg className="icon" role="presentation" aria-hidden="true">
             <use href="/icons.svg#social-icon"></use>
           </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
+          <h2>Autorzy:</h2>
+          <p>Skontaktuj się z nami</p>
+
           <ul>
             <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
+              <a href="podaj email" target="_blank" rel="noreferrer">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#social-icon"></use>
+                </svg>
+                Michał Tarnawa
+              </a>
+            </li>
+            <li>
+              <a href="Podaj email" target="_blank" rel="noreferrer">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#social-icon"></use>
+                </svg>
+                Wojciech Grzywocz
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/Grzywocz-W/Company-AI-Assistant" target="_blank">
                 <svg
                   className="button-icon"
                   role="presentation"
@@ -75,42 +132,18 @@ function App() {
                 GitHub
               </a>
             </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
+            {/*<li>*/}
+            {/*  <a href="https://bsky.app/profile/vite.dev" target="_blank">*/}
+            {/*    <svg*/}
+            {/*      className="button-icon"*/}
+            {/*      role="presentation"*/}
+            {/*      aria-hidden="true"*/}
+            {/*    >*/}
+            {/*      <use href="/icons.svg#bluesky-icon"></use>*/}
+            {/*    </svg>*/}
+            {/*    Bluesky*/}
+            {/*  </a>*/}
+            {/*</li>*/}
           </ul>
         </div>
       </section>
