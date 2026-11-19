@@ -43,11 +43,11 @@ class InternetAgent:
                  func= self.searchInternet.run,
                  description = "Używaj do przeszukania internetu"
                  ),
-            '''Tool(
-                name="SearXNGSearch",
-                func=self.searchInternet.run,
-                description="Używaj do przeszukania internetu"
-                )'''
+            #Tool(
+                #name="SearXNGSearch",
+                #func=self.searchInternet.run,
+                #description="Używaj do przeszukania internetu"
+                #)
             ]
         
 

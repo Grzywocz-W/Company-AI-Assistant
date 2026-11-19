@@ -2,8 +2,9 @@
 from enum import Enum
 
 class modelsList(Enum):
-    gema3_27b = "google/gemma-3-27b-it"
+    gemma4_31b = "google/gemma-4-31b-it"
     gemi3_5_fl = "google/gemini-3.5-flash-lite"
+    gemi3_1_fl = "google/gemini-3.1-flash-lite"
 
     gpt4o_mini = "openai/gpt-4o-mini"
 

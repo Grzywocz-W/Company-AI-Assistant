@@ -42,8 +42,8 @@ class CoordinatorAgent:
         #========================AGENCI========================#
         self.databaseAgent = DatabaseAgent(model)
         #self.ragAgent = RagAgent(model, docsPath)
-        #self.internetAgent = InternetAgent(model)
-        self.securityAgent = SecurityAgent(model)
+        self.internetAgent = InternetAgent(model)
+        #self.securityAgent = SecurityAgent(model)
         #========================AGENCI========================#
 
         self.tools =[
@@ -64,10 +64,10 @@ class CoordinatorAgent:
                  #func= self.ragAgent.ragAgentResponse,
                  #description = "Używaj wtedy gdy otrzymasz zapytanie związane z dokumentacją regulaminem lub polityką firmy bądź jeśli otrzymasz zapytanie o kwestie prawne lub zwroty."
                  #),
-            #Tool(name = "AgentPrzeszukaniaInternetu",
-                 #func= self.internetAgent.internetAgentResponse,
-                 #description = "Używaj do przeszukania sieci. Nie podawaj ŻADNYCH wrażliwych danych. Używaj tylko wtedy gdy brakuje ci informacji żeby odpowiedzieć na pytanie."
-                 #),
+            Tool(name = "AgentPrzeszukaniaInternetu",
+                 func= self.internetAgent.internetAgentResponse,
+                 description = "Używaj do przeszukania sieci. Nie podawaj ŻADNYCH wrażliwych danych. Używaj tylko wtedy gdy brakuje ci informacji żeby odpowiedzieć na pytanie."
+                 ),
             ]
         #dodać później wyszukiwarkę
         prompt = PromptTemplate.from_template(COORDINATOR_PROMPT)
