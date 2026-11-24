@@ -100,16 +100,15 @@ export default function ChatWindow()
 
     useEffect(() =>
     {
-        if (messageEndingRef.current)
+
+        const historyBox = messageEndingRef.current?.parentElement;
+        if (historyBox)
         {
-            messageEndingRef.current.scrollIntoView(
-                { behavior: "auto" }
-            );
+            historyBox.scrollTo({ top: historyBox.scrollHeight, behavior: "auto" });
         }
     },
         [messagesList, isResponding, responseStatus],
-    )
-        ;
+    )   ;
     
 
     const updateValueSessionTimer =
