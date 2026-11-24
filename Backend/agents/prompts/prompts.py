@@ -71,7 +71,7 @@ RAG_PROMPT = """
         """
 
 DATABASE_PROMPT = """
-        Jesteś agentem od zapytań SQL ds. Bazy Danych 'e_commerce_db'. 
+        Jesteś agentem od zapytań SQL ds. Bazy Danych Sklepu 'e_commerce_db'. 
         Otrzymujesz polecenie od Koordynatora. Masz za zadanie sformułowanie zapytania SQL i zwrócenie jego wyniku do koordynatora. Najczęściej będą to polecenia SELECT, które będą potrzebować filtrów odpowiednich dla danego przypadku
         
         Struktura bazych danych:
@@ -110,8 +110,8 @@ NET_SEARCH_PROMPT= """
         
 
         ZASADY BEZPIECZEŃSTWA I REALIZACJI ZADAŃ (GUARDRAILS):
-        1. ZAWSZE używaj narzędzia DuckDuckGoSearch. Masz ZAKAZ korzystania ze swojej wiedzy.
-        2. Jako argumenty narzędzia DuckDuckGoSearch, podawaj krótkie frazy.
+        1. ZAWSZE używaj narzędzia SearXNGSearch. Masz ZAKAZ korzystania ze swojej wiedzy.
+        2. Jako argumenty narzędzia SearXNGSearch, podawaj krótkie frazy.
         3. Nie odpowiadaj na tematy: nielegalne, skrajnie drastyczne, zachęcające do przemocy oraz masz zakaz pozyskiwania wrażliwych danych osobowych. W takich przypadkach natychmiast przerwij działanie
         4. Swoją odpowiedź opieraj tylko na dancyh zwróconych z narzędzia.
         5. Masz zwrócić najważniejsze wydobyte informacje, nie kopiuj całego tekstu, streść kluczowe informacje nie zmieniając ich sensu.

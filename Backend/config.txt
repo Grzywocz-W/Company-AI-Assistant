@@ -1,8 +1,9 @@
 # AI
-MAIN_MODEL=gemi3_5_fl
+MAIN_MODEL=gemi3_1_fl
 # MAIN_MODEL=ollama_qwen25
 OLLAMA_URL=http://localhost:11434
 ALLOWED_ADMIN_IP=127.0.0.1
+ADMIN_PASSWORD=admin_password
 SESSION_LIFESPAN_LIMIT=5400
 
 # Internet

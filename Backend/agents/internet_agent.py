@@ -11,6 +11,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import Tool
 ###internet
 from langchain_community.tools import DuckDuckGoSearchRun
+from langchain_community.utilities import SearxSearchWrapper
 ###
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models import modelsList
@@ -32,22 +33,21 @@ class InternetAgent:
 ##            temperature=0.3#Wyższa kreatywność
 ##            )
         
-        self.searchInternet = DuckDuckGoSearchRun()
-        '''self.searxInternet = SearxSearchWrapper(
-            searx_host=backendConfig.get("SEARXNG_URL", "http://localhost:8080"),  # adres kontenera
-            k=5  # liczba wyników
-        )'''
+        #self.searchInternet = DuckDuckGoSearchRun()
+        self.searxInternet = SearxSearchWrapper(
+            searx_host=backendConfig.get("SEARXNG_URL", "http://localhost:8080")  # adres kontenera
+        )
         
         self.tools =[
-            Tool(name = "DuckDuckGoSearch",
-                 func= self.searchInternet.run,
-                 description = "Używaj do przeszukania internetu"
-                 ),
-            #Tool(
-                #name="SearXNGSearch",
-                #func=self.searchInternet.run,
-                #description="Używaj do przeszukania internetu"
-                #)
+            #Tool(name = "DuckDuckGoSearch",
+                 #func= self.searchInternet.run,
+                 #description = "Używaj do przeszukania internetu"
+                 #),
+            Tool(
+                name="SearXNGSearch",
+                func=self._searchWithSources,
+                description="Używaj do przeszukania internetu"
+                )
             ]
         
 
@@ -60,6 +60,19 @@ class InternetAgent:
             verbose=True,#wypisuje w konsoli jak myśli
             handle_parsing_errors=True,
             )
+
+    def _searchWithSources(self, query: str) -> str:
+        results = self.searxInternet.results(query, num_results=5)
+        if not results or "Result" in results[0]:
+            return "Brak wyników wyszukiwania."
+
+        formatted = []
+        for r in results:
+            title = r.get("title", "Brak tytułu")
+            link = r.get("link", "")
+            snippet = r.get("snippet", "")
+            formatted.append(f"Tytuł: {title}\nLink: {link}\nOpis: {snippet}")
+        return "\n\n".join(formatted)
 
 
     def internetAgentResponse(self, inputText: str):

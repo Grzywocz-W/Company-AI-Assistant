@@ -203,8 +203,8 @@ class GuardrailChecker:
                 Args:
                     id_klienta: ID klienta z tabeli klienci
                 Returns:
-                    Tuple (is_allowed: bool, probability: float, message: str)
-                      - is_allowed:  True = operacja dozwolona, False = zablokowana
+                    Tuple: (is_allowed: bool, probability: float, message: str):
+                      - is_allowed:  True = operacja dozwolona, False = zablokowana (operacje dozwolone gdy probability >= 0.6 - zastosowano dodatkowe techniczne zabezpieczenie przed FP)
                       - probability: pewność sieci (0.0 - 1.0)
                       - message:     czytelny komunikat dla agenta / logów
         """
@@ -230,7 +230,7 @@ class GuardrailChecker:
         with torch.no_grad():
             probability = self._model(tensor).item()
 
-        is_allowed = probability >= 0.6
+        is_allowed = probability >= 0.6     # Zastosowano dodatkowe zabezpieczenie inżynieryjne, podnosząc próg z 0.5 do 0.6, aby zaimplementować dodatkowe techniczne zabezpieczenie przed False Positive, ponieważ FP są w naszym systemie potencjalnie dużo bardziej niebezpieczne niż FN
 
         if is_allowed:
             message = (

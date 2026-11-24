@@ -75,7 +75,7 @@ class DatabaseAgent:
         GuardrailChecker sam pobiera 10 cech z bazy i uruchamia sieć PyTorch.
         """
         if not _guardrailAvailable or _guardrail is None:
-            return True, "Guardrail niedostępny - operacja domyślnie dozwolona."
+            return False, "Guardrail niedostępny - operacja domyślnie nie dozwolona."
 
         try:
             # sprawdz() zwraca (is_allowed, probability, message) z progiem 0.6 bo FN bezpieczniejsze niż FP
@@ -88,7 +88,7 @@ class DatabaseAgent:
         except Exception as e:
             print(f"[DatabaseAgent] Błąd guardrail dla klienta {id_klienta}: {e}")
             # Fail-open przy błędzie technicznym
-            return True, f"Błąd guardrail: {e}"
+            return False, f"Błąd guardrail: {e}"
 
 
     def askDatabase(self, sql_query: str):
