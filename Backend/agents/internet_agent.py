@@ -45,7 +45,7 @@ class InternetAgent:
                  #),
             Tool(
                 name="SearXNGSearch",
-                func=self._searchWithSources,
+                func=self.searchSearXNG,
                 description="Używaj do przeszukania internetu"
                 )
             ]
@@ -61,18 +61,26 @@ class InternetAgent:
             handle_parsing_errors=True,
             )
 
-    def _searchWithSources(self, query: str) -> str:
-        results = self.searxInternet.results(query, num_results=5)
-        if not results or "Result" in results[0]:
+    def searchSearXNG(self, query: str):
+        results = self.searxInternet.results(
+            query,
+            num_results=5
+            )
+        if not results:
+            return "Brak wyników wyszukiwania."
+        elif "Result" in results[0]:
             return "Brak wyników wyszukiwania."
 
-        formatted = []
-        for r in results:
-            title = r.get("title", "Brak tytułu")
-            link = r.get("link", "")
-            snippet = r.get("snippet", "")
-            formatted.append(f"Tytuł: {title}\nLink: {link}\nOpis: {snippet}")
-        return "\n\n".join(formatted)
+        linksWithResult = []
+        for result in results:
+            title = result.get("title", "Brak tytułu")
+            link = result.get("link", "")
+            snippet = result.get("snippet", "")
+            linksWithResult.append(
+                f"Tytuł: {title}\nLink: {link}\nOpis: {snippet}"
+                )
+        toReturn = "\n\n".join(linksWithResult)
+        return toReturn
 
 
     def internetAgentResponse(self, inputText: str):

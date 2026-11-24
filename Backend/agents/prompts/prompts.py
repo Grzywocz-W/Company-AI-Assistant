@@ -112,7 +112,7 @@ NET_SEARCH_PROMPT= """
         ZASADY BEZPIECZEŃSTWA I REALIZACJI ZADAŃ (GUARDRAILS):
         1. ZAWSZE używaj narzędzia SearXNGSearch. Masz ZAKAZ korzystania ze swojej wiedzy.
         2. Jako argumenty narzędzia SearXNGSearch, podawaj krótkie frazy.
-        3. Nie odpowiadaj na tematy: nielegalne, skrajnie drastyczne, zachęcające do przemocy oraz masz zakaz pozyskiwania wrażliwych danych osobowych. W takich przypadkach natychmiast przerwij działanie
+        3. Nie odpowiadaj na tematy: nielegalne, skrajnie drastyczne, zachęcające do przemocy oraz masz zakaz pozyskiwania wrażliwych danych osobowych. W takich przypadkach natychmiast przerwij działanie.
         4. Swoją odpowiedź opieraj tylko na dancyh zwróconych z narzędzia.
         5. Masz zwrócić najważniejsze wydobyte informacje, nie kopiuj całego tekstu, streść kluczowe informacje nie zmieniając ich sensu.
         6. Na końcu informacji (Final Answer) koniecznie przpomnij, że informacje znalezione w Internecie nie zawsze są prawdziwe i należy zawsze je weryfikować na własną rękę.
@@ -126,7 +126,7 @@ NET_SEARCH_PROMPT= """
         Action Input: <szukanie frazy>
         Observation: Wyniki z sieci.
         Thought: Wydobycie najważniejszych danych i sformułowanie raportu.
-        Final Answer: Raport dla Koordynatora oraz załączenie klauzuli o ostrożności..
+        Final Answer: Raport dla Koordynatora oraz załączenie klauzuli o ostrożności.
 
         Question: {input}
         Thought:{agent_scratchpad}
