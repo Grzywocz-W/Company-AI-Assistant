@@ -84,8 +84,8 @@ function App() {
                     <div className="noticeBar" role="status">
                         <span className="noticeIcon">💡</span>
                         <div className="noticeText">
-                            <strong>Informacja dnia:</strong> asystent korzysta z bazy zamówień, dokumentów firmy
-                            oraz wyszukiwarki. Operacje na danych klientów są dodatkowo zabezpieczone przez sieć neuronową.
+                            <strong>Informacja dnia:</strong> W naszym sklepie JUŻ TERAZ możesz zadać pytanie wirtualnemu asystentowi, który korzysta z firmowej bazy danych, regulaminu sklepu
+                            oraz wyszukiwarki, aby świadczyć jak najlepszą jakość odpowiedzi i nieść natychmiastową pomoc naszym klientom.
                         </div>
                         <button className="noticeClose" onClick={() => setShowNotice(false)}
                             aria-label="Zamknij informację">✕</button>
