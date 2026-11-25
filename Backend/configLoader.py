@@ -1,5 +1,5 @@
 import os
-def loadConfig(filePath = "config.txt"):#zakładamy, że plik konfiguracyjny jest w tym samym miejscu co jego loader
+def loadConfig(filePath = ".env"):#zakładamy, że plik konfiguracyjny jest w tym samym miejscu co jego loader
     settingsData = {}
     if not (os.path.exists(filePath)):
         print("PLIK USTAWIEŃ USZKODZONY")

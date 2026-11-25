@@ -5,7 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from configLoader import loadConfig
 
 
-backendConfig = loadConfig('config.txt')
+backendConfig = loadConfig('.env')
 sessionLifespan = int(backendConfig.get("SESSION_LIFESPAN_LIMIT", 3600))#3600s
 
 #jeden użytkwonik = jedna sesja

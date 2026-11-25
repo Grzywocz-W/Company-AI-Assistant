@@ -21,7 +21,7 @@ def pobierz_dane_z_bazy() -> pd.DataFrame:
     """
     import mysql.connector
 
-    backend_config = loadConfig('config.txt')
+    backend_config = loadConfig('.env')
     conn = mysql.connector.connect(
         host=backend_config.get("DB_HOST_ADMIN", "127.0.0.1"),
         user=backend_config.get("DB_USER_ADMIN", "agent_admin"),

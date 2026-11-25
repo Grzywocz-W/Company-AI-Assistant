@@ -36,7 +36,7 @@ except Exception as e:
     _guardrailAvailable = False
 
 api_key = os.getenv("Gemini_API_Key")
-backendConfig = loadConfig('config.txt')
+backendConfig = loadConfig('.env')
 
 
 class DatabaseAgent:

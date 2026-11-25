@@ -95,7 +95,7 @@ def usun_polskie_znaki(tekst):
 
 
 def generuj_baze_danych(liczba_klientow=300, liczba_zamowien=1000):
-    backend_config = loadConfig('config.txt')
+    backend_config = loadConfig('.env')
     try:
         conn = mysql.connector.connect(
             host=backend_config.get("DB_HOST_ADMIN", "127.0.0.1"),

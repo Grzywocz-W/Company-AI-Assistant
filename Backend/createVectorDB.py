@@ -9,7 +9,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from configLoader import loadConfig
 
 api_key = os.getenv("Gemini_API_Key")
-backendConfig = loadConfig('config.txt')
+backendConfig = loadConfig('.env')
 
 #pdf_paths = "documents/regulamin.pdf"
 

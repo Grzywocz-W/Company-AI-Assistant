@@ -103,7 +103,7 @@ class GuardrailChecker:
     # Pobranie danych klienta z bazy
 
     def _pobierz_features_klienta(self, id_klienta: int) -> dict:
-        backend_config = loadConfig('config.txt')
+        backend_config = loadConfig('.env')
         try:
             conn = mysql.connector.connect(
                 host=backend_config.get("DB_HOST_CUSTOMER", "127.0.0.1"),

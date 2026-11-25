@@ -25,7 +25,7 @@ from configLoader import loadConfig
 from mainPY_funcs.sessionOrganizer import sessionsDict, checkSessionLifespan
 
 
-backendConfig = loadConfig('config.txt')
+backendConfig = loadConfig('.env')
 
 
 @asynccontextmanager #bez tego nie działa

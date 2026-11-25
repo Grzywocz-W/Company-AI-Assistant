@@ -18,7 +18,7 @@ from models import modelsList
 from modelSelector import createLLM
 from agents.prompts.prompts import NET_SEARCH_PROMPT
 from configLoader import loadConfig
-backendConfig = loadConfig('config.txt')
+backendConfig = loadConfig('.env')
 #
 api_key = os.getenv("Gemini_API_Key")
 

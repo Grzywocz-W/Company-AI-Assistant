@@ -4,11 +4,11 @@ from models import modelsList
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 #from langchain_openai import ChatOpenAI
-from langchain_ollama import ChatOllama
+#from langchain_ollama import ChatOllama
 
 from configLoader import loadConfig
 
-backendConfig = loadConfig('config.txt')
+backendConfig = loadConfig('.env')
 def createLLM(model_enum: modelsList, temperature = 0.0):
     fullModelName = model_enum.value
     aiCompany, modelName = fullModelName.split("/")
@@ -27,12 +27,12 @@ def createLLM(model_enum: modelsList, temperature = 0.0):
 ##            temperature=temperature
 ##            )
 ##        return openAiLLM
-    elif aiCompany == "ollama":
-        OllamaLLM = ChatOllama(
-            model=modelName,
-            base_url=backendConfig.get("OLLAMA_URL"),
-            temperature=temperature,
-            )
-        return OllamaLLM
+##    elif aiCompany == "ollama":
+##        OllamaLLM = ChatOllama(
+##            model=modelName,
+##            base_url=backendConfig.get("OLLAMA_URL"),
+##            temperature=temperature,
+##            )
+##        return OllamaLLM
     else:
         raise ValueError(f"Brak takiego modelu dostawcy {aiCompany}")
