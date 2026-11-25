@@ -325,7 +325,7 @@ export default function ChatWindow()
 
             {isAdminControl &&
                 (
-                <div className="admin_Header">
+                <div className="adminHeader">
                     {!hasAdminAccess ?
                         (
                         <button

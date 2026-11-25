@@ -314,3 +314,8 @@
     background-color: var(--bg-btn-admin-login-hover);
 }
 
+
+.adminHeader {
+    justify-content: center;
+    display: flex;/*aby center zadziałało*/
+}

@@ -33,7 +33,7 @@ const TIPS = [
 ]
 
 function App() {
-    const [showNotice, setShowNotice] = useState(true)
+/*    const [showNotice, setShowNotice] = useState(true)*/
     const [openStep, setOpenStep] = useState(0)
     const [tipIndex, setTipIndex] = useState(0)
 
@@ -46,44 +46,44 @@ function App() {
     return (
         <>
             {/* animowane tło */}
-            <div className="appBg" aria-hidden="true">
-                <div className="grid" />
-                <div className="blob b1" />
-                <div className="blob b2" />
-                <div className="blob b3" />
+            <div className="backgorudAnimated" aria-hidden="true">
+                <div className="gridPattern" />
+                <div className="glowingCircle topLeftCorner" />
+                <div className="glowingCircle bottomRightCorner" />
+                <div className="glowingCircle centering" />
             </div>
 
             <div className="app">
                 {/* nagłówek */}
                 <header className="appHeader">
-                    <div className="brand">
-                        <div className="brandLogo">AI</div>
+                    <div className="icon">
+                        <div className="iconLogo">AI</div>
                         <div>
-                            <div className="brandName">COMPANY<span>-AI</span></div>
-                            <div className="brandSub">Inteligentny asystent sklepu internetowego</div>
+                            <div className="iconName">COMPANY<span>-AI</span></div>
+                            <div className="iconSub">Inteligentny asystent sklepu internetowego</div>
                         </div>
                     </div>
                     <div className="headerRight">
-                        <div className="onlinePill">
-                            <span className="onlineDot" /> System online
-                        </div>
+                        {/*<div className="onlinePill">*/}
+                        {/*    <span className="onlineDot" /> System online*/}
+                        {/*</div>*/}
                         <a className="ghLink" href="https://github.com/"
                             target="_blank" rel="noopener noreferrer">GitHub ↗</a>
                     </div>
                 </header>
 
                 {/* informacja dnia (zamykana) */}
-                {showNotice && (
-                    <div className="noticeBar" role="status">
-                        <span className="noticeIcon"></span>
-                        <div className="noticeText">
-                            <strong>Informacja dnia:</strong> W naszym sklepie JUŻ TERAZ możesz zadać pytanie wirtualnemu asystentowi, który korzysta z firmowej bazy danych, regulaminu sklepu
-                            oraz wyszukiwarki, aby świadczyć jak najlepszą jakość odpowiedzi i nieść natychmiastową pomoc naszym klientom.
-                        </div>
-                        <button className="noticeClose" onClick={() => setShowNotice(false)}
-                            aria-label="Zamknij informację">✕</button>
-                    </div>
-                )}
+                {/*{showNotice && (*/}
+                {/*    <div className="noticeBar" role="status">*/}
+                {/*        <span className="noticeIcon"></span>*/}
+                {/*        <div className="noticeText">*/}
+                {/*            <strong>Informacja dnia:</strong> W naszym sklepie JUŻ TERAZ możesz zadać pytanie wirtualnemu asystentowi, który korzysta z firmowej bazy danych, regulaminu sklepu*/}
+                {/*            oraz wyszukiwarki, aby świadczyć jak najlepszą jakość odpowiedzi i nieść natychmiastową pomoc naszym klientom.*/}
+                {/*        </div>*/}
+                {/*        <button className="noticeClose" onClick={() => setShowNotice(false)}*/}
+                {/*            aria-label="Zamknij informację">✕</button>*/}
+                {/*    </div>*/}
+                {/*)}*/}
 
                 <main className="layout">
                     {/* LEWA KOLUMNA – instrukcja */}
