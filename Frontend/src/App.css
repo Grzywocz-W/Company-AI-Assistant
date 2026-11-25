@@ -229,13 +229,6 @@
 }
 .step.open .stepBody { max-height: 160px; opacity: 0.9; padding: 0 12px 12px; }
 
-/* ---------- Zegar ---------- */
-.clockTime {
-  font-size: 2.2rem; font-weight: 700; font-variant-numeric: tabular-nums;
-  background: linear-gradient(90deg, #fff, var(--accent));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-.clockDate { font-size: 0.85rem; opacity: 0.7; text-transform: capitalize; }
 
 /* ---------- Statusy agenta ---------- */
 .legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }

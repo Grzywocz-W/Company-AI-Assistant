@@ -19,10 +19,10 @@ const STEPS = [
 ]
 
 const AGENT_STATES = [
-    { icon: '🧠', name: 'Myślę', desc: 'Agent Koordynator analizuje zapytanie' },
-    { icon: '🗄️', name: 'Sprawdzam w bazie danych', desc: 'Agent przeszukuję naszą firmową bazę danych w celu udzielenia Ci lepszych odpowiedzi' },
-    { icon: '📄', name: 'Przeszukuję dokumenty', desc: 'Agent analizuje regulamin i politykę, aby przekazać ci aktualne informacje' },
-    { icon: '🌐', name: 'Szukam w Internecie', desc: 'Agent anonimowo wyszukuje dodatkowych informacji na stronach internetowych' },
+    { icon: '', name: 'Myślę', desc: 'Agent Koordynator analizuje zapytanie' },
+    { icon: '️', name: 'Sprawdzam w bazie danych', desc: 'Agent przeszukuję naszą firmową bazę danych w celu udzielenia Ci lepszych odpowiedzi' },
+    { icon: '', name: 'Przeszukuję dokumenty', desc: 'Agent analizuje regulamin i politykę, aby przekazać ci aktualne informacje' },
+    { icon: '', name: 'Szukam w Internecie', desc: 'Agent anonimowo wyszukuje dodatkowych informacji na stronach internetowych' },
 ]
 
 const TIPS = [
@@ -35,20 +35,13 @@ const TIPS = [
 function App() {
     const [showNotice, setShowNotice] = useState(true)
     const [openStep, setOpenStep] = useState(0)
-    const [now, setNow] = useState(new Date())
     const [tipIndex, setTipIndex] = useState(0)
 
     useEffect(() => {
-        const clock = setInterval(() => setNow(new Date()), 1000)
         const tips = setInterval(() => setTipIndex((i) => (i + 1) % TIPS.length), 8000)
-        return () => {
-            clearInterval(clock)
-            clearInterval(tips)
-        }
+        return () => clearInterval(tips)
     }, [])
 
-    const timeText = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-    const dateText = now.toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 
     return (
         <>
@@ -82,7 +75,7 @@ function App() {
                 {/* informacja dnia (zamykana) */}
                 {showNotice && (
                     <div className="noticeBar" role="status">
-                        <span className="noticeIcon">💡</span>
+                        <span className="noticeIcon"></span>
                         <div className="noticeText">
                             <strong>Informacja dnia:</strong> W naszym sklepie JUŻ TERAZ możesz zadać pytanie wirtualnemu asystentowi, który korzysta z firmowej bazy danych, regulaminu sklepu
                             oraz wyszukiwarki, aby świadczyć jak najlepszą jakość odpowiedzi i nieść natychmiastową pomoc naszym klientom.
@@ -96,7 +89,7 @@ function App() {
                     {/* LEWA KOLUMNA – instrukcja */}
                     <aside className="sideCol">
                         <section className="card">
-                            <h2 className="cardTitle">📘 Instrukcja obsługi</h2>
+                            <h2 className="cardTitle"> Instrukcja obsługi</h2>
                             <p className="cardSub"></p>
                             <ul className="steps">
                                 {STEPS.map((s, i) => (
@@ -112,12 +105,6 @@ function App() {
                                 ))}
                             </ul>
                         </section>
-
-                        <section className="card">
-                            <h2 className="cardTitle">🕒 Teraz</h2>
-                            <div className="clockTime">{timeText}</div>
-                            <div className="clockDate">{dateText}</div>
-                        </section>
                     </aside>
 
                     {/* ŚRODEK – czat (bez zmian) */}
@@ -128,7 +115,7 @@ function App() {
                     {/* PRAWA KOLUMNA – widgety */}
                     <aside className="sideCol right">
                         <section className="card">
-                            <h2 className="cardTitle">🤖 Co robi asystent?</h2>
+                            <h2 className="cardTitle">Co robi asystent?</h2>
                             <p className="cardSub">Statusy widoczne podczas odpowiedzi</p>
                             <ul className="legend">
                                 {AGENT_STATES.map((a) => (
@@ -141,7 +128,7 @@ function App() {
                         </section>
 
                         <section className="card">
-                            <h2 className="cardTitle">✨ Wskazówka</h2>
+                            <h2 className="cardTitle"> Wskazówka</h2>
                             <p className="tipText" key={tipIndex}>{TIPS[tipIndex]}</p>
                             <div className="tipDots">
                                 {TIPS.map((_, i) => (
