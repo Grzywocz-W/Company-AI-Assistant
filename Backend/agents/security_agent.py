@@ -13,28 +13,14 @@ from agents.prompts.prompts import SECURITY_PROMPT
 api_key = os.getenv("Gemini_API_Key")
 
 class SecurityAgent:
-    """
-    Agent do spraw bezpieczeństwa.
-    Analizuje potencjalnie złośliwe prompty zanim trafia do dalszego
-    przetwarzania (SQL injection, prompt injection, próby zmiany roli, itp.)
-    Zwraca: "BEZPIECZNY" albo "ZAGROŻENIE: <opis>"
-    """
 
     def __init__(self, model: modelsList):
         # Niska temperatura — agent ma być deterministyczny, nie kreatywny
         self.model = createLLM(model, temperature=0.0)
 
-        # Agent bezpieczeństwa nie potrzebuje zewnętrznych narzędzi —
-        # całą analizę przeprowadza sam model na podstawie promptu systemowego.
-        # Dodajemy jedno wewnętrzne "pseudo-narzędzie" analizy,
-        # które zamyka wzorzec ReAct w sensownej pętli.
-        def analyzePrompt(text: str) -> str:
-            """
-            Wewnętrzne narzędzie — zwraca wynik analizy bezpieczeństwa
-            fragmentu tekstu przekazanego przez koordynatora.
-            """
-            # Faktyczna analiza odbywa się przez LLM w pętli ReAct,
-            # to narzędzie służy jako punkt wejścia do wzorca.
+        #sam agent dokonuje analizy
+        def analyzePrompt(text: str):
+            #pętla analizy
             return f"Analiza wejścia: {text}"
 
         self.tools = [
@@ -42,7 +28,7 @@ class SecurityAgent:
                 name="AnalizaBezpieczenstwa",
                 func=analyzePrompt,
                 description=(
-                    "Użyj do przeprowadzenia szczegółowej analizy bezpieczeństwa podanego tekstu."
+                    "Użyj do przeprowadzenia analizy bezpieczeństwa analizowanego tekstu."
                 ),
             )
         ]
@@ -55,17 +41,14 @@ class SecurityAgent:
             tools=self.tools,
             verbose=True,
             handle_parsing_errors=True,
-            max_iterations=3,  # Celowo krótka pętla — decyzja powinna być szybka
+            max_iterations=3,  #krótka pętla
         )
 
-    def securityAgentResponse(self, inputText: str) -> str:
-        """
-        Główna metoda.
-        Przyjmuje podejrzany prompt od koordynatora.
-        Zwraca string: "BEZPIECZNY" albo "ZAGROŻENIE: <opis>"
-        """
+    def securityAgentResponse(self, inputText: str):
         try:
-            response = self.agentExecutor.invoke({"input": inputText})
+            response = self.agentExecutor.invoke(
+                {"input": inputText}
+                )
 
             if isinstance(response, dict):
                 result = response.get("output", str(response))
@@ -76,5 +59,5 @@ class SecurityAgent:
 
         except Exception as e:
             print(f"[SecurityAgent] Błąd agenta bezpieczeństwa: {e}")
-            # W razie wątpliwości — blokujemy. Fail-safe.
-            return f"ZAGROŻENIE: Błąd wewnętrzny agenta bezpieczeństwa — {e}"
+            #jak jest bład to blokujemy
+            return f"ZAGROŻENIE: Błąd agenta bezpieczeństwa - {e}"

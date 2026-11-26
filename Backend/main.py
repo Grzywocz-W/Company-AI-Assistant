@@ -65,7 +65,7 @@ except Exception as e:
     print("Nie ma takiego modelu")
     model = modelsList[defaultModel]
 
-coordAgent = CoordinatorAgent(model=model)
+#coordAgent = CoordinatorAgent(model=model)
 
 
 #!!!!!DODAĆ ZWALNANIE PAMIĘCI!!!!!!!

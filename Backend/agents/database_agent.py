@@ -27,11 +27,11 @@ try:
     _guardrail = GuardrailChecker()
     _guardrailAvailable = _guardrail._is_loaded
     if _guardrailAvailable:
-        print("[DatabaseAgent] Guardrail załadowany pomyślnie.")
+        print("[DatabaseAgent] Model Guardrail został załadowany pomyślnie.")
     else:
-        print("[DatabaseAgent] Guardrail niedostępny — tryb awaryjny (operacje dozwolone).")
+        print("[DatabaseAgent] Model Guardrail niedostępny")
 except Exception as e:
-    print(f"[DatabaseAgent] Błąd ładowania Guardrail: {e}")
+    print(f"[DatabaseAgent] Wystąpił nieoczekiwany błąd podczas odczytu modelu Guardrail: {e}")
     _guardrail = None
     _guardrailAvailable = False
 
@@ -69,16 +69,10 @@ class DatabaseAgent:
 
 
     def _checkGuardrail(self, id_klienta: int) -> tuple:
-        """
-        Wywołuje GuardrailChecker dla danego klienta z progiem 0.6 (podniesiony próg w celu dodatkowego zabezpieczenia przed FP).
-        Zwraca (is_allowed: bool, message: str).
-        GuardrailChecker sam pobiera 10 cech z bazy i uruchamia sieć PyTorch.
-        """
         if not _guardrailAvailable or _guardrail is None:
-            return False, "Guardrail niedostępny - operacja domyślnie nie dozwolona."
+            return False, "Model Guardrail jest niedostępny - operacja nie dozwolona."
 
         try:
-            # sprawdz() zwraca (is_allowed, probability, message) z progiem 0.6 bo FN bezpieczniejsze niż FP
             is_allowed, probability, msg = _guardrail.sprawdz(id_klienta)
 
             print(f"[Guardrail] id={id_klienta} | prob={probability:.4f} | "
@@ -87,7 +81,7 @@ class DatabaseAgent:
 
         except Exception as e:
             print(f"[DatabaseAgent] Błąd guardrail dla klienta {id_klienta}: {e}")
-            # Fail-open przy błędzie technicznym
+            #fail-safe
             return False, f"Błąd guardrail: {e}"
 
 
@@ -102,18 +96,18 @@ class DatabaseAgent:
                 hasProhibitedInQuery = True
                 break
 
-        # Guardrail: wyłącznie dla operacji MODYFIKUJĄCYCH dane klienta
+        #Część odpowiedzialna za zabezpieczenia
         if hasProhibitedInQuery:
             match = re.search(r'id_klienta\s*=\s*(\d+)', sql_query, re.IGNORECASE)
             if match:
                 id_klienta = int(match.group(1))
                 is_allowed, guardrail_msg = self._checkGuardrail(id_klienta)
                 if not is_allowed:
-                    return (f"Operacja zablokowana przez system oceny ryzyka (Guardrail AI). "
+                    return (f"Operacja została zablokowana przez sieć neuronową do oceny ryzyka (Guardrail AI). "
                             f"Szczegóły: {guardrail_msg}")
         
         try:
-            if not self.isAdmin: #zazwyczaj nie będzie adminem a więc not False = True
+            if not self.isAdmin:
                 if hasProhibitedInQuery:
                     return "Odmowa dostępu. Niedozwolone polecenie dla zwykłego użytkownika."
                 loginHost=backendConfig.get("DB_HOST_CUSTOMER")
