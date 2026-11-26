@@ -2,6 +2,15 @@
     --gridLinesColor: rgba(255, 255, 255, 0.035);
     --gridLinesSize: 2.75px;
     --gridSquareSize: 48px;
+    /*stopka*/
+    --authorAutorBackgroundColor: rgba(255, 255, 255, 0.1);
+    --authorAutorPadding: 10px 17.5px;
+    --stopkaGapAuthors: 19px;
+    --stopkaGap: 10px;
+    --stopkaFontSize: 0.95rem;
+    --stopkaPadding: 12px;
+    --stopkaRadius: 13px;
+    --stopkaTopMargin: 53px;
     /*ruch*/
     --circleMotionOX1: 92px;
     --circleMotionOY1: 69px;
@@ -9,56 +18,11 @@
     --circleMotionOX2: -69px;
     --circleMotionOY2: 90px;
     --circleSize2: 0.75;
-    /*kółeczka*/
-    --circleAnimationLenght: 15s;
-    --circlerOpacityCenter: 0.25;
-    --circleBlur: 160px;
-    --circleOpacity: 0.8;
-    /*kółeczka kolory*/
-    --circleBottomRightColor: #040a7a;
-    --circleCenterColor: #056161;
-    --circleTopLeftColor: #047a2b;
-    /*kółeczka rozmiary*/
-    --circleBottomRightSize: 480px; /*48 to kratka*/
-    --circleCenterSize: 360px;
-    --circleTopLeftSize: 480px;
-    /*kółeczka opóźnienia*/
-    --circleRightWait: -3s;
-    --circleCenterWait: -5s;
     /*inne*/
     --leftCollumWidthLaptop: 320px;
-    --cardMininumWidthTablet: 250px;
+    --uiPanelMininumWidthTablet: 250px;
     --pagePaddingMobile: 10px;
     --headerPaddingmobile: 10px 15px;
-    /*app i jego nagłówek*/
-    --headerBlur: 16px;
-    --headerGapSize: 24px;
-    --headerBackgroundColor: rgba(13,19,31,0.749);
-    --headerPadding: 14px 28px;
-    --pageSidePadding: 20px;
-    /*icon i logo*/
-    --iconLogoSize: 48px; /*48 to z androida*/
-    --iconLogoShadow: 0 0 10px rgba(74, 127, 250, 0.549);
-    --iconGap: 20px;
-    --iconLogoRadius: 12.5px;
-    /*--iconLogoPulseTime: 2s;*/ /*1 za szybko*/
-    --iconLogoColor: #fff;
-    /*github*/
-    /*przycisk GitHub*/
-    --gitHubLinkFontSize: 0.82rem;
-    --gitHubLinkHoverColor: #faeded;
-    --gitHubLinkPadding: 8px 16px;
-    --gitHubLinkHoverPixels: -4px;
-    --gitHubLinkTransDuration: 0.8s; /*takie ociężałe*/
-    /*siatka główna i kolumny*/
-    --chatWindowApperanceDuration: 2s; /*ładne i długie*/
-    --leftColWidth: 240px;
-    --rightColWidth: 270px;
-    --chatWindowMargin: -10px;
-    --sidColTopSticky: 20px;
-    --sectorGap: 24px;
-    --sidColGap: 24px;
-    /*wskazówki*/
     /*karty (panele boczne)*/
     --tileShadow: 5px 20px 12px rgba(0, 0, 0, 0.5);
     --tileHoverBorderColor: rgba(65, 119, 245, 0.4);
@@ -75,6 +39,56 @@
     --tileBottomMarginSun: 4px;
     --tileFadeUpTransY: 2px;
     --tileFadeUpTime: 2.5s;
+    /*app i jego nagłówek*/
+    --headerBlur: 16px;
+    --headerGapSize: 24px;
+    --headerBackgroundColor: rgba(13,19,31,0.749);
+    --headerPadding: 14px 28px;
+    --pageSidePadding: 20px;
+    /*icon i logo*/
+    --iconLogoSize: 48px; /*48 to z androida*/
+    --iconLogoShadow: 0 0 10px rgba(74, 127, 250, 0.549);
+    --iconGap: 20px;
+    --iconLogoRadius: 12.5px;
+    /*--iconLogoPulseTime: 2s;*/ /*1 za szybko*/
+    --iconLogoColor: #fff;
+    /*kółeczka*/
+    --circleAnimationLenght: 15s;
+    --circlerOpacityCenter: 0.25;
+    --circleBlur: 160px;
+    --circleOpacity: 0.8;
+    /*kółeczka kolory*/
+    --circleBottomRightColor: #040a7a;
+    --circleCenterColor: #056161;
+    --circleTopLeftColor: #047a2b;
+    /*kółeczka rozmiary*/
+    --circleBottomRightSize: 480px; /*48 to kratka*/
+    --circleCenterSize: 360px;
+    --circleTopLeftSize: 480px;
+    /*kółeczka opóźnienia*/
+    --circleRightWait: -3s;
+    --circleCenterWait: -5s;
+    /*ikona*/
+    --iconTextNameFontSize: 2.0rem;
+    --iconSubtitleFontSize: 0.9rem;
+    --iconSubtitleOpacity: 0.85;
+    --iconTextNameSpacingBetweenLetters: 0.64px;
+    /*github*/
+    /*przycisk GitHub*/
+    --gitHubLinkFontSize: 0.82rem;
+    --gitHubLinkHoverColor: #faeded;
+    --gitHubLinkPadding: 8px 16px;
+    --gitHubLinkHoverPixels: -4px;
+    --gitHubLinkTransDuration: 0.8s; /*takie ociężałe*/
+    /*siatka główna i kolumny*/
+    --chatWindowApperanceDuration: 2s; /*ładne i długie*/
+    --leftColWidth: 240px;
+    --rightColWidth: 270px;
+    --chatWindowMargin: -10px;
+    --sidColTopSticky: 20px;
+    --sectorGap: 24px;
+    --sidColGap: 24px;
+    /*wskazówki*/
     /*instrukcja (akordeon)*/
     --accordBackgroundColor: rgba(255, 255, 255, 0.065);
     --accordGap: 10px;
@@ -91,6 +105,18 @@
     --accordRadius: 17px;
     --accordHeadderPadding: 4px 8px;
     --accordHeaderGap: 16px;
+    /*wskazówka dnia*/
+    --tipsCircleBackgroundgColor: rgba(255, 255, 255, 0.9);
+    --tipsFontSize: 0.84rem;
+    --tipsFadeUpTime: 0.75s;
+    --tipsFadeMargin: 12px;
+    --tipsCircleOnRadius: 9px;
+    --tipsCircleSize: 4.5px;
+    --tipsCircleOnWidthSize: 32px;
+    --tipsGapCircles: 9px;
+    --tipsTopMarginCircles: 2px;
+    --tipsHeightMin: 56px;
+    --tipsCircleTransTime: 0.435s;
     /*statusy agenta*/
     --agentStatusInfoItPadding: 8px 10px;
     --agentStatusInfoGap: 8px;
@@ -101,27 +127,17 @@
     --agentStatusInfoOpacitySmall: 0.9;
     --agentStatusInfoItBackgroundColor: rgba(255, 255, 255, 0.08);
     --agentStatusInfoItRadius: 13px;
-    /*wskazówka dnia*/
-    --tipsDotBackgroundgColor: rgba(255, 255, 255, 0.9);
-    --tipsFontSize: 0.84rem;
-    --tipsFadeUpTime: 0.75s;
-    --tipsFadeMargin: 12px;
-    --tipsDotOnRadius: 9px;
-    --tipsDotSize: 4.5px;
-    --tipsDotOnWidthSize: 32px;
-    --tipsGapDots: 9px;
-    --tipsTopMarginDots: 2px;
-    --tipsHeightMin: 56px;
-    --tipsDotTransTime: 0.435s;
-    /*stopka*/
-    --authorAutorBackgroundColor: rgba(255, 255, 255, 0.1);
-    --authorAutorPadding: 10px 17.5px;
-    --stopkaGapAuthors: 19px;
-    --stopkaGap: 10px;
-    --stopkaFontSize: 0.95rem;
-    --stopkaPadding: 12px;
-    --stopkaRadius: 13px;
-    --stopkaTopMargin: 53px;
+    /*kółeczka C.D.*/
+    --circleTopLeftUp: -120px;
+    --circleTopLeftLSide: -100px;
+    --circleCenterUp: 40%;
+    --circleCenterLSide: 55%;
+    --circleBottomRightDown: -140px;
+    --circleBottomRightRSide: -80px;
+    /*app*/
+    --appGap: 18px;
+    --appMaximumWidth: 1480px;
+    --appBottomPadding: 32px;
 }
 
 
@@ -137,417 +153,450 @@
     background: var(--page-bg);
 }
     .backgorudAnimated .glowingCircle {
-        position: absolute;
         border-radius: 50%;
-        filter: blur(var(--circleBlur));
         opacity: var(--circleOpacity);
+        filter: blur(var(--circleBlur));
+        position: absolute;
         animation: circleAnimation var(--circleAnimationLenght) infinite;
     }
     .backgorudAnimated .topLeftCorner {
+        left: var(--circleTopLeftLSide);
+        top: var(--circleTopLeftUp);
         width: var(--circleTopLeftSize);
         height: var(--circleTopLeftSize);
         background: var(--circleTopLeftColor);
-        top: -120px;
-        left: -100px;
     }
-    .backgorudAnimated .bottomRightCorner {
-        width: var(--circleBottomRightSize);
-        height: var(--circleBottomRightSize);
-        background: var(--circleBottomRightColor);
-        bottom: -140px;
-        right: -80px;
-        animation-delay: var(--circleRightWait);
-    }
+
     .backgorudAnimated .centering {
+        left: var(--circleCenterLSide);
+        top: var(--circleCenterUp);
         width: var(--circleCenterSize);
         height: var(--circleCenterSize);
         background: var(--circleCenterColor);
-        top: 40%;
-        left: 55%;
-        opacity: var(--circlerOpacityCenter);
         animation-delay: var(--circleCenterWait);
+        opacity: var(--circlerOpacityCenter);
     }
-    .backgorudAnimated .gridPattern {
-        position: absolute;
-        inset: 0;
-        background-image: linear-gradient(var(--gridLinesColor) var(--gridLinesSize), transparent var(--gridLinesSize)), /*pion*/
-            linear-gradient(90deg, var(--gridLinesColor) var(--gridLinesSize), transparent var(--gridLinesSize));/*poziom*/
-        background-size: var(--gridSquareSize) var(--gridSquareSize);
+
+    .backgorudAnimated .bottomRightCorner {
+        right: var(--circleBottomRightRSide);
+        bottom: var(--circleBottomRightDown);
+        background: var(--circleBottomRightColor);
+        width: var(--circleBottomRightSize);
+        height: var(--circleBottomRightSize);
+        animation-delay: var(--circleRightWait);
     }
+
 @keyframes circleAnimation {
     0%, 100% {
         transform: translate(0, 0) scale(1);
     }
+
     33% {
         transform: translate(var(--circleMotionOX1), var(--circleMotionOY1)) scale(var(--circleSize1));
     }
+
     66% {
         transform: translate(var(--circleMotionOX2), var(--circleMotionOY2)) scale(var(--circleSize2));
     }
 }
 
+.backgorudAnimated .gridPattern {
+    background-image: linear-gradient(var(--gridLinesColor) var(--gridLinesSize), transparent var(--gridLinesSize)), /*pion*/
+    linear-gradient(90deg, var(--gridLinesColor) var(--gridLinesSize), transparent var(--gridLinesSize)); /*poziom*/
+    background-size: var(--gridSquareSize) var(--gridSquareSize);
+    inset: 0;
+    position: absolute;
+}
+
 /* ============ UKŁAD STRONY ============ */
 .app {
+    margin: 0 auto;
+    padding: 0 var(--pageSidePadding) var(--appBottomPadding);
+    gap: var(--appGap);
+    max-width: var(--appMaximumWidth);
+    flex-direction: column;
     position: relative;
     z-index: 1;
-    max-width: 1480px;
-    margin: 0 auto;
-    padding: 0 var(--pageSidePadding) 32px;
     display: flex;
-    flex-direction: column;
-    gap: 18px;
 }
 
 /* ---------- Nagłówek ---------- */
 .appHeader {
-    position: relative;
     top: 0;
-    z-index: 20;
+    gap: var(--headerGapSize);
     margin: 0 calc(-1*var(--pageSidePadding));
     padding: var(--headerPadding);
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--headerGapSize);
-    background: var(--headerBackgroundColor);
     backdrop-filter: blur(var(--headerBlur));
+    position: relative;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
     -webkit-backdrop-filter: blur(var(--headerBlur));
+    background: var(--headerBackgroundColor);
     border-bottom: 1px solid var(--card-border);
 }
-.icon {
-    display: flex;
-    align-items: center;
-    gap: var(--iconGap);
-}
-.iconLogo {
-    width: var(--iconLogoSize);
-    height: var(--iconLogoSize);
-    border-radius: var(--iconLogoRadius);
+
+/* ---------- Siatka główna ---------- */
+.layout {
+    align-items: start;
+    grid-template-columns: var(--leftColWidth) minmax(0, 1fr) var(--rightColWidth);
     display: grid;
-    place-items: center;
-    font-weight: 800;
-    color: var(--iconLogoColor);
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    box-shadow: var(--iconLogoShadow);
-    /*animation: logoPulse var(--iconLogoPulseTime) ease-in-out infinite;*/
-}
-/*@keyframes logoPulse {
-  0%, 100% { box-shadow: 0 0 14px rgba(91,140,255,0.4); }
-  50%      { box-shadow: 0 0 30px rgba(165,107,255,0.7); }
-}*/
-.iconName {
-  font-size: 2.0rem; font-weight: 800; letter-spacing: 0.64px;
-  color: var(--page-text-strong);
-}
-    .iconName span { /*AI*/
-        background: linear-gradient(120deg, var(--accent), var(--accent-2));
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-    }
-.iconSub {
-    font-size: 0.9rem;
-    opacity: 0.85;
+    gap: var(--sectorGap);
 }
 
-.headerRight { display: flex; align-items: center; gap: 12px; }
-/*.onlinePill {
-  display: flex; align-items: center; gap: 8px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 0.82rem;
-  background: rgba(12, 166, 55, 0.12);
-  border: 1px solid rgba(12, 166, 55, 0.4);
-  color: #6be28c;
+.sideCol {
+    flex-direction: column;
+    top: var(--sidColTopSticky); /* pod nagłówkiem: panel NIE zasłania i nie ucieka */
+    display: flex;
+    gap: var(--sidColGap);
+    align-self: start;
+    position: sticky;
 }
-.onlineDot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--ok);
-  animation: dotPing 1.8s ease-out infinite;
+
+.chatWindowArea {
+    justify-content: center;
+    display: flex;
+    position: relative; /* okno logowania admina nakłada się tylko na czat */
+    animation: fadeUp var(--chatWindowApperanceDuration) ease both;
 }
-@keyframes dotPing {
-  0%   { box-shadow: 0 0 0 0 rgba(12,166,55,0.7); }
-  100% { box-shadow: 0 0 0 10px rgba(12,166,55,0); }
-}*/
-.ghLink {
-    color: var(--page-text);
-    text-decoration: none;
+
+    .chatWindowArea > .chatWindow {
+        margin: var(--chatWindowMargin) auto 0;
+    }
+
+
+
+.headerRight {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+}
+
+.gitHubLink {
     padding: var(--gitHubLinkPadding);
     border-radius: 999px;
     border: 1px solid var(--card-border);
     font-size: var(--gitHubLinkFontSize);
+    color: var(--page-text);
     transition: all var(--gitHubLinkTransDuration);
-    
+    text-decoration: none;
 }
-    .ghLink:hover {
+
+    .gitHubLink:hover {
         color: var(--gitHubLinkHoverColor);
-        border-color: var(--accent);
         transform: translateY(var(--gitHubLinkHoverPixels));
+        border-color: var(--accent);
     }
 
-/* ---------- Baner "informacja dnia" ---------- */
-/*.noticeBar {
-  display: flex; align-items: center; gap: 14px;
-  padding: 12px 16px;
-  border-radius: 14px;
-  background: linear-gradient(90deg, rgba(91,140,255,0.18), rgba(165,107,255,0.14));
-  border: 1px solid rgba(91,140,255,0.35);
-  animation: slideDown 0.5s ease both;
-}
-.noticeIcon { font-size: 1.4rem; }
-.noticeText { flex: 1; font-size: 0.92rem; color: #e6ecf7; }
-.noticeText strong { color: #fff; }
-.noticeClose {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  border: none; cursor: pointer;
-  background: rgba(255,255,255,0.08);
-  color: #fff; font-size: 1rem; line-height: 1;
-  transition: all 0.2s;
-}
-.noticeClose:hover { background: rgba(255,77,77,0.8); transform: rotate(90deg); }
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-14px); }
-  to   { opacity: 1; transform: none; }
-}*/
 
-/* ---------- Siatka główna ---------- */
-.layout {
-    display: grid;
-    grid-template-columns: var(--leftColWidth) minmax(0, 1fr) var(--rightColWidth);
-    gap: var(--sectorGap);
-    align-items: start;
-}
-.sideCol {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sidColGap);
-    position: sticky;
-    top: var(--sidColTopSticky); /* pod nagłówkiem: panel NIE zasłania i nie ucieka */
-    align-self: start;
-}
-.chatSlot {
-    position: relative; /* okno logowania admina nakłada się tylko na czat */
-    display: flex;
-    justify-content: center;
-    animation: fadeUp var(--chatWindowApperanceDuration) ease both;
-}
-    .chatSlot > .chatWindow {
-        margin: var(--chatWindowMargin) auto 0;
-    }
-
-/* ---------- Karty ---------- */
-.card {
-    padding: var(--tilePadding);
-    border-radius: var(--tileRadius);
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    backdrop-filter: blur(var(--tileBlur));
-    -webkit-backdrop-filter: blur(var(--tileBlur));
-    box-shadow: var(--tileShadow);
-    animation: fadeUp var(--tileFadeUpTime) ease both;
-    transition: transform var(--tileHoverDuration), border-color var(--tileHoverDuration);
-}
-    .card:hover {
-        transform: translateY(var(--tileHoverSize));
-        border-color: var(--tileHoverBorderColor);
-    }
-.card:nth-child(2) { animation-delay: 0.1s; }
-.card:nth-child(3) { animation-delay: 0.2s; }
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(var(--tileFadeUpTransY));
-    }
-  to   { opacity: 1; transform: none; }
-}
-.cardTitle {
-    display: flex;
-    align-items: center;
-    gap: var(--tileTitleGap);
-    font-size: var(--tileTitleFontSize);
-    font-weight: 700;
-    color: var(--page-text-strong);
-    margin-bottom: var(--tileTitleBottomMargin);
-}
-.cardSub {
-    font-size: var(--tileFontSizeSub);
-    opacity: var(--tileOpacitySub);
-    margin-bottom: var(--tileBottomMarginSun);
-}
 /* ---------- Instrukcja (akordeon) ---------- */
-.steps {
-    list-style: none;
-    margin: 0;
+.instructionSteps {
     padding: 0;
-    display: flex;
+    margin: 0;
     flex-direction: column;
+    list-style: none;
+    display: flex;
     gap: var(--accordGap);
 }
-.step {
-    border-radius: var(--accordRadius);
-    border: 1px solid var(--card-border);
+
+.infoStep {
     background: var(--accordBackgroundColor);
+    border: 1px solid var(--card-border);
     overflow: hidden;
+    border-radius: var(--accordRadius);
 }
-.stepHead {
+
+.infoStepHead {
     width: 100%;
-    display: flex;
-    align-items: center;
-    gap: var(--accordHeaderGap);
     padding: var(--accordHeadderPadding);
-    background: none;
     border: none;
-    cursor: pointer;
+    background: none;
     color: var(--page-text-strong);
+    display: flex;
+    gap: var(--accordHeaderGap);
     font: inherit;
     font-size: var(--accordHeadderFontSize);
     text-align: left;
+    align-items: center;
+    cursor: pointer;
 }
-.stepNum {
-    flex: none;
+.infoStepNum {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
     width: var(--accordNumberSize);
     height: var(--accordNumberSize);
     border-radius: 50%;
-    display: grid;
     place-items: center;
+    display: grid;
     font-size: var(--accordNumberFontSize);
+    flex: none;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
 }
-.stepArrow {
-    margin-left: auto;
+
+.infoStepArrow {
     transition: transform var(--accordArrowTransTime);
+    margin-left: auto;
     opacity: var(--accordArrowOpacity);
-    
 }
-.step.open .stepArrow { transform: rotate(180deg); }
-.stepBody {
-    max-height: 0;
-    overflow: hidden;
+
+.infoStep.open .infoStepArrow {
+    transform: rotate(180deg);
+}
+
+.infoStepBody {
     padding: 0 12px;
     font-size: var(--accordBodyFontSize);
-    opacity: 0;
     transition: max-height var(--accordBodyTransDuration) ease, opacity var(--accordBodyTransDuration), padding var(--accordBodyTransDuration);
-    
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
 }
-.step.open .stepBody {
+
+.infoStep.open .infoStepBody {
+    padding: var(--accordBodyPaddOpen);
     max-height: var(--accordBodyMaximumHeightOpen);
     opacity: var(--accordBodyOpacityOpen);
-    padding: var(--accordBodyPaddOpen);
 }
+
+/* ---------- Karty ---------- */
+.uiPanel {
+    padding: var(--tilePadding);
+    background: var(--card-bg);
+    backdrop-filter: blur(var(--tileBlur));
+    animation: fadeUp var(--tileFadeUpTime) ease both;
+    border: 1px solid var(--card-border);
+    -webkit-backdrop-filter: blur(var(--tileBlur));
+    transition: transform var(--tileHoverDuration), border-color var(--tileHoverDuration);
+    border-radius: var(--tileRadius);
+    box-shadow: var(--tileShadow);
+}
+
+    .uiPanel:hover {
+        border-color: var(--tileHoverBorderColor);
+        transform: translateY(var(--tileHoverSize));
+    }
+
+    .uiPanel:nth-child(2) {
+        animation-delay: 0.12s;
+    }
+
+    .uiPanel:nth-child(3) {
+        animation-delay: 0.24s;
+    }
+
+@keyframes fadeUp {
+    from {
+        transform: translateY(var(--tileFadeUpTransY));
+        opacity: 0;
+    }
+
+    to {
+        transform: none;
+        opacity: 1;
+    }
+}
+
+.uiPanelSub {
+    opacity: var(--tileOpacitySub);
+    margin-bottom: var(--tileBottomMarginSun);
+    font-size: var(--tileFontSizeSub);
+}
+
+.uiPanelTitle {
+    align-items: center;
+    margin-bottom: var(--tileTitleBottomMargin);
+    font-size: var(--tileTitleFontSize);
+    color: var(--page-text-strong);
+    display: flex;
+    gap: var(--tileTitleGap);
+    font-weight: 700;
+}
+
 
 
 /* ---------- Statusy agenta ---------- */
 .legend {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
     flex-direction: column;
+    margin: 0;
+    display: flex;
     gap: var(--agentStatusInfoGap);
+    list-style: none;
+    padding: 0;
 }
+
     .legend li {
-        display: flex;
         align-items: center;
+        border-radius: var(--agentStatusInfoItRadius);
+        font-size: var(--agentStatusInfoFontSize);
+        display: flex;
         gap: var(--agentStatusInfoItGap);
         padding: var(--agentStatusInfoItPadding);
-        border-radius: var(--agentStatusInfoItRadius);
         background: var(--agentStatusInfoItBackgroundColor);
-        font-size: var(--agentStatusInfoFontSize);
     }
+
+    .legend small {
+        font-size: var(--agentStatusInfoFontSizeSmall);
+        display: block;
+        opacity: var(--agentStatusInfoOpacitySmall);
+    }
+
 .legendIcon {
-    font-size: var(--agentStatusInfoIconSize)
-}
-.legend small {
-    display: block;
-    opacity: var(--agentStatusInfoOpacitySmall);
-    font-size: var(--agentStatusInfoFontSizeSmall);
+    font-size: var(--agentStatusInfoIconSize); /*brakowalo ;*/
 }
 
 /* ---------- Wskazówka dnia ---------- */
 .tipText {
+    animation: tipFade var(--tipsFadeUpTime) ease;
     min-height: var(--tipsHeightMin);
     font-size: var(--tipsFontSize);
-    animation: tipFade var(--tipsFadeUpTime) ease;
 }
+
 @keyframes tipFade {
     from {
-        opacity: 0;
         transform: translateX(var(--tipsFadeMargin));
-    } to { opacity: 1; transform: none; } }
-.tipDots {
-    display: flex;
-    gap: var(--tipsGapDots);
-    margin-top: var(--tipsTopMarginDots);
-}
-.tipDot {
-    width: var(--tipsDotSize);
-    height: var(--tipsDotSize);
-    border-radius: 50%;
-    background: var(--tipsDotBackgroundgColor);
-    transition: all var(--tipsDotTransTime);
-  
-}
-    .tipDot.active {
-        width: var(--tipsDotOnWidthSize);
-        border-radius: var(--tipsDotOnRadius);
-        background: var(--accent);
+        opacity: 0;
     }
+
+    to {
+        transform: none;
+        opacity: 1;
+    }
+}
+
+.tipCircle {
+    width: var(--tipsCircleSize);
+    height: var(--tipsCircleSize);
+    transition: all var(--tipsCircleTransTime);
+    border-radius: 50%;
+    background: var(--tipsCircleBackgroundgColor);
+}
+
+    .tipCircle.active {
+        width: var(--tipsCircleOnWidthSize);
+        background: var(--accent);
+        border-radius: var(--tipsCircleOnRadius);
+    }
+
+.tipCircles {
+    margin-top: var(--tipsTopMarginCircles);
+    display: flex;
+    gap: var(--tipsGapCircles);
+}
+
+
 
 /* ---------- Stopka ---------- */
 .appFooter {
+    font-size: var(--stopkaFontSize);
     margin-top: var(--stopkaTopMargin);
     padding: var(--stopkaPadding);
-    border-radius: var(--stopkaRadius);
     background: var(--card-bg);
     border: 1px solid var(--card-border);
+    border-radius: var(--stopkaRadius);
+    justify-content: space-between;
+    gap: var(--stopkaGap);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--stopkaGap);
-    font-size: var(--stopkaFontSize);
 }
+
 .footerAuthors {
     display: flex;
-    gap: var(--stopkaGapAuthors);
     flex-wrap: wrap;
+    gap: var(--stopkaGapAuthors);
 }
-.authorChip {
-    padding: var(--authorAutorPadding);
+
+.authorPill {
     border-radius: 999px;
-    border: 1px solid var(--card-border);
-    background: var(--authorAutorBackgroundColor);
     color: var(--page-text-strong);
+    background: var(--authorAutorBackgroundColor);
+    padding: var(--authorAutorPadding);
+    border: 1px solid var(--card-border);
+}
+
+
+.icon {
+    gap: var(--iconGap);
+    display: flex;
+    align-items: center;
+}
+
+.iconLogo {
+    width: var(--iconLogoSize);
+    height: var(--iconLogoSize);
+    color: var(--iconLogoColor);
+    box-shadow: var(--iconLogoShadow);
+    display: grid;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: var(--iconLogoRadius);
+    place-items: center;
+    font-weight: 800;
+}
+
+.iconName {
+    color: var(--page-text-strong);
+    font-size: var(--iconTextNameFontSize);
+    letter-spacing: var(--iconTextNameSpacingBetweenLetters);
+    font-weight: 800;
+}
+
+    .iconName span { /*AI*/
+        color: transparent;
+        background: linear-gradient(120deg, var(--accent), var(--accent-2));
+        background-clip: text;
+        -webkit-background-clip: text;
+    }
+
+.iconSub {
+    font-size: var(--iconSubtitleFontSize);
+    opacity: var(--iconSubtitleOpacity);
 }
 
 /* ============ RESPONSYWNOŚĆ ============ */
-@media (max-width: 1280px) {/*laptopy*/
+@media (max-width: 1440px) { /*laptopy*/
     .layout {
         grid-template-columns: var(--leftCollumWidthLaptop) minmax(0, 1fr);
     }
+
     .sideCol.right {
-        grid-column: 1 / -1;
-        position: static;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(var(--cardMininumWidthTablet), 1fr));
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(auto-fit, minmax(var(--uiPanelMininumWidthTablet), 1fr));
+        position: static;
     }
 }
-@media (max-width: 900px) {
-  .layout { grid-template-columns: minmax(0, 1fr); }
-  .chatSlot { order: -1; }              /* czat zawsze na górze na telefonie */
-  .sideCol { position: static; }
-  .sideCol.right { display: flex; }
-  .iconSub, .ghLink { display: none; }
+
+@media (max-width: 720px) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .chatWindowArea {
+        order: -1;
+    }
+    /* czat zawsze na górze na telefonie */
+    .sideCol {
+        position: static;
+    }
+
+        .sideCol.right {
+            display: flex;
+        }
+
+    .iconSub, .gitHubLink {
+        display: none;
+    }
+
     .appHeader {
         padding: var(--headerPaddingmobile);
     }
 }
-@media (max-width: 520px) {
+
+@media (max-width: 480px) {
     .app {
         padding: 0 var(--pagePaddingMobile) 24px;
     }
+
     .appHeader {
         margin: 0 calc(-1*var(--pagePaddingMobile));
     }
@@ -555,5 +604,8 @@
 
 /* Szanujemy ustawienia „ogranicz animacje" */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+    *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
+    }
 }
